@@ -1,0 +1,1 @@
+#this is notes for the first assignment of 240
