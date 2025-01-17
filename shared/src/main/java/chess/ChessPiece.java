@@ -31,9 +31,17 @@ public class ChessPiece {
         PAWN
     }
 
+    public PieceType getPieceType() {
+        return type;
+    }
     /**
      * @return Which team this chess piece belongs to
      */
+
+    public enum TeamColor {
+        WHITE,
+        BLACK
+    }
     public ChessGame.TeamColor getTeamColor() {
         return pieceColor;
     }
@@ -41,9 +49,7 @@ public class ChessPiece {
     /**
      * @return which type of chess piece this piece is
      */
-    public PieceType getPieceType() {
-        return type;
-    }
+
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -55,9 +61,11 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         PieceMovesCalculator calculator;
 
+        Collection<ChessMove> moves = null;
         if (this.getPieceType() == PieceType.BISHOP) {
             calculator = new BishopMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
         }
-        return new ArrayList<>();
+        return moves;
     }
 }
