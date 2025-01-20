@@ -1,23 +1,134 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import chess.ChessPosition;
+import java.util.*;
 
-public class BishopMovesCalculator implements PieceMovesCalculator{
+import chess.ChessPosition;
+import chess.ChessPiece;
+
+public class BishopMovesCalculator implements PieceMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         //need start position, end position and promotion piece
         int row = position.getRow();
         int col = position.getColumn();
         ChessPosition startPosition = new ChessPosition(row, col);
-        //start position will stay the same
-        //end position will need to be changed in a loop to all possible end positions. promotion will always be null for bishop
-        ChessPosition endPosition = new ChessPosition(row + 1, col +1 );
-
+        //get piece and check the team color, used to validate moves
+        ChessPiece startingPiece = board.getPiece(startPosition);
+        ChessGame.TeamColor tColor = startingPiece.getTeamColor();
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
-        ChessMove move = new ChessMove(startPosition, endPosition, null);
-        moves.add(move);
+        List<List<Integer>> movesList = new ArrayList<>();
+        int i = 1;
+
+        //moving up and to the right
+        while ((row + i) <= 8 && (col + i) <= 8) {
+            ChessPosition endPosition = new ChessPosition((row + i), (col + i));
+            System.out.println(board.getPiece(endPosition));
+            if (board.getPiece(endPosition) == null) {
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                ++i;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() == tColor)
+            {
+                break;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() != tColor){
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                break;
+            }
+        }
+
+        // moving down and to the left
+        i = 1;
+        while ((row - i) > 0 && (col + i) <= 8) {
+            System.out.println(row - i);
+            ChessPosition endPosition = new ChessPosition((row - i), (col + i));
+            System.out.println(board.getPiece(endPosition));
+            if (board.getPiece(endPosition) == null) {
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row - i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                ++i;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() == tColor)
+            {
+                break;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() != tColor){
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                break;
+            }
+        }
+
+        //moving down to the left
+        i = 1;
+        while ((row - i) > 0 && (col - i) > 0) {
+            ChessPosition endPosition = new ChessPosition((row - i), (col - i));
+            System.out.println(board.getPiece(endPosition));
+            // validateMoves(startPosition, endPosition, moves)
+            if (board.getPiece(endPosition) == null) {
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row - i);
+                lOfMoves.add(col - i);
+                movesList.add(lOfMoves);
+                ++i;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() == tColor)
+            {
+                break;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() != tColor){
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                break;
+            }
+        }
+
+        // moving up to the left
+        i = 1;
+        while ((row + i) <= 8 && (col - i) > 0) {
+            ChessPosition endPosition = new ChessPosition((row + i), (col - i));
+            System.out.println(board.getPiece(endPosition));
+            if (board.getPiece(endPosition) == null) {
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col - i);
+                movesList.add(lOfMoves);
+                ++i;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() == tColor)
+            {
+                break;
+            } else if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor() != tColor){
+                ChessMove move = new ChessMove(startPosition, endPosition, null);
+                moves.add(move);
+                List<Integer> lOfMoves = new ArrayList<Integer>();
+                lOfMoves.add(row + i);
+                lOfMoves.add(col + i);
+                movesList.add(lOfMoves);
+                break;
+            }
+        }
+        System.out.println(movesList);
+
 
         return moves;
     }
