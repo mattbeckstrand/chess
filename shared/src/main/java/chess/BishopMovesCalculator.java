@@ -22,7 +22,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
         //moving up and to the right
         while ((row + i) <= 8 && (col + i) <= 8) {
             ChessPosition endPosition = new ChessPosition((row + i), (col + i));
-            System.out.println(board.getPiece(endPosition));
             if (board.getPiece(endPosition) == null) {
                 ChessMove move = new ChessMove(startPosition, endPosition, null);
                 moves.add(move);
@@ -48,9 +47,7 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
         // moving down and to the left
         i = 1;
         while ((row - i) > 0 && (col + i) <= 8) {
-            System.out.println(row - i);
             ChessPosition endPosition = new ChessPosition((row - i), (col + i));
-            System.out.println(board.getPiece(endPosition));
             if (board.getPiece(endPosition) == null) {
                 ChessMove move = new ChessMove(startPosition, endPosition, null);
                 moves.add(move);
@@ -77,7 +74,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
         i = 1;
         while ((row - i) > 0 && (col - i) > 0) {
             ChessPosition endPosition = new ChessPosition((row - i), (col - i));
-            System.out.println(board.getPiece(endPosition));
             // validateMoves(startPosition, endPosition, moves)
             if (board.getPiece(endPosition) == null) {
                 ChessMove move = new ChessMove(startPosition, endPosition, null);
@@ -105,7 +101,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
         i = 1;
         while ((row + i) <= 8 && (col - i) > 0) {
             ChessPosition endPosition = new ChessPosition((row + i), (col - i));
-            System.out.println(board.getPiece(endPosition));
             if (board.getPiece(endPosition) == null) {
                 ChessMove move = new ChessMove(startPosition, endPosition, null);
                 moves.add(move);
