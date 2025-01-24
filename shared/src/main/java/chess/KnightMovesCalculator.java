@@ -2,34 +2,32 @@ package chess;
 
 import java.util.*;
 
-import chess.*;
+import chess.ChessPosition;
+import chess.ChessPiece;
 
-public class KingMovesCalculator implements PieceMovesCalculator {
+public class KnightMovesCalculator implements PieceMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         //need start position, end position and promotion piece
         int row = position.getRow();
         int col = position.getColumn();
         ChessPosition startPosition = new ChessPosition(row, col);
-        System.out.println(startPosition);
         //get piece and check the team color, used to validate moves
         ChessPiece startingPiece = board.getPiece(startPosition);
         ChessGame.TeamColor tColor = startingPiece.getTeamColor();
-        System.out.println(tColor);
         ArrayList<ChessPosition> endPositionTest = new ArrayList<ChessPosition>();
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         List<List<Integer>> movesList = new ArrayList<>();
         int i = 1;
-
         //All possible positions
-        ChessPosition endPosition1 = new ChessPosition((row + 1), (col));
-        ChessPosition endPosition2 = new ChessPosition((row), (col + 1));
-        ChessPosition endPosition3 = new ChessPosition((row + 1), (col + 1));
-        ChessPosition endPosition4 = new ChessPosition((row - 1), (col - 1));
-        ChessPosition endPosition5 = new ChessPosition((row - 1), (col + 1));
-        ChessPosition endPosition6 = new ChessPosition((row + 1), (col - 1));
-        ChessPosition endPosition7 = new ChessPosition((row - 1), (col));
-        ChessPosition endPosition8 = new ChessPosition((row), (col - 1));
+        ChessPosition endPosition1 = new ChessPosition((row + 1), (col - 2));
+        ChessPosition endPosition2 = new ChessPosition((row - 1), (col - 2));
+        ChessPosition endPosition3 = new ChessPosition((row -2), (col - 1));
+        ChessPosition endPosition4 = new ChessPosition((row - 2), (col + 1));
+        ChessPosition endPosition5 = new ChessPosition((row - 1), (col + 2));
+        ChessPosition endPosition6 = new ChessPosition((row + 1), (col + 2));
+        ChessPosition endPosition7 = new ChessPosition((row + 2), (col + 1));
+        ChessPosition endPosition8 = new ChessPosition((row + 2), (col - 1));
 
         //have positions in a list
         endPositionTest.add(endPosition1);
@@ -42,13 +40,14 @@ public class KingMovesCalculator implements PieceMovesCalculator {
         endPositionTest.add(endPosition8);
 
 
-
+        int count = 0;
         for (ChessPosition cP : endPositionTest) {
+            count++;
             col = cP.getColumn();
             row = cP.getRow();
             //first check: is the counter in bounds
-            if (col > 8 || row > 8 || col < 0 || row < 0) {
-                break;
+            if (col > 8 || row > 8 || col <= 0 || row <= 0) {
+                continue;
             }
             //second check: if it is in bounds and the position has no piece, add it
             else if (board.getPiece(cP) == null) {

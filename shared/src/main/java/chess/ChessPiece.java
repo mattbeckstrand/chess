@@ -80,6 +80,14 @@ public class ChessPiece {
             calculator = new BishopMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
         }
+        else if (this.getPieceType() == PieceType.KING) {
+            calculator = new KingMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
+        }
+        else if (this.getPieceType() == PieceType.KNIGHT) {
+            calculator = new KnightMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
+        }
         return moves;
     }
 }
