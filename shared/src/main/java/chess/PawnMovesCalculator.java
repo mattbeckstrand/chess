@@ -59,7 +59,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
                 ChessMove move2 = new ChessMove(startPosition, check2, null);
                 moves.add(move2);
             }
-            //diagnol to the left
+            //diagnol to the lef
             if (startCol - 1 > 0 && board.getPiece(check3) != null && board.getPiece(check3).getTeamColor() != ChessGame.TeamColor.BLACK) {
                 if (startRow - 1 > 1) {
                     ChessMove move3 = new ChessMove(startPosition, check3, null);
