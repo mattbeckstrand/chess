@@ -88,6 +88,18 @@ public class ChessPiece {
             calculator = new KnightMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
         }
+        else if (this.getPieceType() == PieceType.PAWN) {
+            calculator = new PawnMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
+        }
+        else if (this.getPieceType() == PieceType.QUEEN) {
+            calculator = new QueenMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
+        }
+        else if (this.getPieceType() == PieceType.ROOK) {
+            calculator = new RookMovesCalculator();
+            moves = calculator.pieceMoves(board, myPosition);
+        }
         return moves;
     }
 }

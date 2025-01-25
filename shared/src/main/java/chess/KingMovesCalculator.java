@@ -42,12 +42,14 @@ public class KingMovesCalculator implements PieceMovesCalculator {
         endPositionTest.add(endPosition8);
 
 
-
+        System.out.println("starting King");
         for (ChessPosition cP : endPositionTest) {
             col = cP.getColumn();
             row = cP.getRow();
+            System.out.println(col);
+            System.out.println(row);
             //first check: is the counter in bounds
-            if (col > 8 || row > 8 || col < 0 || row < 0) {
+            if (col > 8 || row > 8 || col <= 0 || row <= 0) {
                 break;
             }
             //second check: if it is in bounds and the position has no piece, add it
