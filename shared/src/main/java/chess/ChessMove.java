@@ -66,10 +66,4 @@ public class ChessMove {
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;
     }
-
-    public String printMove(){
-        System.out.println(startPosition);
-        System.out.println(endPosition);
-        return "hello";
-    }
 }
