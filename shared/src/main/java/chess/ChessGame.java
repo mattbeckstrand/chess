@@ -49,10 +49,13 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-       System.out.println(startPosition.getRow());
-       System.out.println(startPosition.getColumn());
-       ChessPiece piece = board.getPiece(startPosition);
-       return piece.pieceMoves(board, startPosition);
+        System.out.println(startPosition.getRow());
+        System.out.println(startPosition.getColumn());
+        if (board.getPiece(startPosition) == null) {
+            throw new IllegalStateException("no piece found at start position");
+        }
+        ChessPiece piece = board.getPiece(startPosition);
+        return piece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -73,9 +76,40 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+//        ChessPosition kingPos = getKing(board, teamColor);
+//        int i = 1;
+//        int j = 1;
+//        while (i < 9){
+//            while (j < 9){
+//                ChessPosition position = new ChessPosition(i,j);
+//                j++;
+//                if (board.getPiece(position) != null && board){
+//
+//                }
+//
+//            }
+//            i++;
+//        }
         throw new RuntimeException("Not implemented");
     }
 
+
+    public ChessPosition getKing(ChessBoard board, TeamColor teamColor) {
+        int i = 1;
+        int j = 1;
+        while (i < 9){
+            j = 1;
+            while (j < 9){
+                ChessPosition position = new ChessPosition(i,j);
+                j++;
+                if (board.getPiece(position).getPieceType() != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == teamColor){
+                    return position;
+                }
+            }
+            i++;
+        }
+        throw new IllegalStateException("No king found for team: " + teamColor);
+    }
     /**
      * Determines if the given team is in checkmate
      *
