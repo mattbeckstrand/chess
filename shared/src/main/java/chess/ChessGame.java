@@ -51,11 +51,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.getPiece(startPosition) == null) {
-            throw new IllegalStateException("no piece found at start position");
-        }
         ChessPiece piece = board.getPiece(startPosition);
         TeamColor tcolor = piece.getTeamColor();
+        System.out.println(startPosition.getRow());
+        System.out.println(startPosition.getColumn());
+        System.out.println(tcolor);
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> toReturnMoves = new ArrayList<>();
         ChessBoard ogBoard = board.clone();
@@ -70,7 +70,6 @@ public class ChessGame {
             } catch (InvalidMoveException e) {
                 continue;
             }
-
         }
         this.board = ogBoard;
         List<List<Integer>> intMoves = new ArrayList<>();
@@ -98,7 +97,7 @@ public class ChessGame {
         ChessPiece.PieceType promPiece = move.getPromotionPiece();
         TeamColor color = board.getPiece(startPosition).getTeamColor();
         ChessPiece.PieceType type = board.getPiece(startPosition).getPieceType();
-        board.removePiece(startPosition);
+        this.board.removePiece(startPosition);
         ChessPiece newPiece;
         if (promPiece == null){
             newPiece = new ChessPiece(color, type);
@@ -106,7 +105,7 @@ public class ChessGame {
         else {
             newPiece = new ChessPiece(color, promPiece);
         }
-        board.addPiece(endPosition, newPiece);
+        this.board.addPiece(endPosition, newPiece);
 
     }
 
@@ -117,6 +116,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        System.out.println(teamColor);
         ChessPosition kingPos = getKing(teamColor);
         int kingRow = kingPos.getRow();
         int kingColumn = kingPos.getColumn();
@@ -146,16 +146,22 @@ public class ChessGame {
 
 
     public ChessPosition getKing(TeamColor teamColor) {
+        System.out.println(teamColor);
         int i = 1;
-        int j = 1;
+        int j;
         while (i < 9){
             j = 1;
             while (j < 9){
                 ChessPosition position = new ChessPosition(i,j);
-                j++;
-                if (board.getPiece(position).getPieceType() != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == teamColor){
+                if ( board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == teamColor){
+                    System.out.println("king");
+                    System.out.println(i);
+                    System.out.println(j);
+                    TeamColor color = board.getPiece(position).getTeamColor();
+                    System.out.println(color);
                     return position;
                 }
+                j++;
             }
             i++;
         }
