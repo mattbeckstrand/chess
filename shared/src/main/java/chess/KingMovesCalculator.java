@@ -11,11 +11,9 @@ public class KingMovesCalculator implements PieceMovesCalculator {
         int row = position.getRow();
         int col = position.getColumn();
         ChessPosition startPosition = new ChessPosition(row, col);
-        System.out.println(startPosition);
         //get piece and check the team color, used to validate moves
         ChessPiece startingPiece = board.getPiece(startPosition);
         ChessGame.TeamColor tColor = startingPiece.getTeamColor();
-        System.out.println(tColor);
         ArrayList<ChessPosition> endPositionTest = new ArrayList<ChessPosition>();
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         List<List<Integer>> movesList = new ArrayList<>();
@@ -41,13 +39,9 @@ public class KingMovesCalculator implements PieceMovesCalculator {
         endPositionTest.add(endPosition7);
         endPositionTest.add(endPosition8);
 
-
-        System.out.println("starting King");
         for (ChessPosition cP : endPositionTest) {
             col = cP.getColumn();
             row = cP.getRow();
-            System.out.println(col);
-            System.out.println(row);
             //first check: is the counter in bounds
             if (col > 8 || row > 8 || col <= 0 || row <= 0) {
                 break;
