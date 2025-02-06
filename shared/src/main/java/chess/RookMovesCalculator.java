@@ -115,7 +115,6 @@ public class RookMovesCalculator implements PieceMovesCalculator {
                 break;
             }
         }
-        System.out.println(movesList);
         return moves;
     }
 }

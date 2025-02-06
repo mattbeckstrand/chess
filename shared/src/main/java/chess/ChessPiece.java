@@ -10,7 +10,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece implements Cloneable{
+public class ChessPiece implements Cloneable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -48,6 +48,7 @@ public class ChessPiece implements Cloneable{
     public PieceType getPieceType() {
         return type;
     }
+
     /**
      * @return Which team this chess piece belongs to
      */
@@ -56,6 +57,7 @@ public class ChessPiece implements Cloneable{
         WHITE,
         BLACK
     }
+
     public ChessGame.TeamColor getTeamColor() {
         return pieceColor;
     }
@@ -79,35 +81,22 @@ public class ChessPiece implements Cloneable{
         if (this.getPieceType() == PieceType.BISHOP) {
             calculator = new BishopMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
-        }
-        else if (this.getPieceType() == PieceType.KING) {
+        } else if (this.getPieceType() == PieceType.KING) {
             calculator = new KingMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
-        }
-        else if (this.getPieceType() == PieceType.KNIGHT) {
+        } else if (this.getPieceType() == PieceType.KNIGHT) {
             calculator = new KnightMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
-        }
-        else if (this.getPieceType() == PieceType.PAWN) {
+        } else if (this.getPieceType() == PieceType.PAWN) {
             calculator = new PawnMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
-        }
-        else if (this.getPieceType() == PieceType.QUEEN) {
+        } else if (this.getPieceType() == PieceType.QUEEN) {
             calculator = new QueenMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
-        }
-        else if (this.getPieceType() == PieceType.ROOK) {
+        } else if (this.getPieceType() == PieceType.ROOK) {
             calculator = new RookMovesCalculator();
             moves = calculator.pieceMoves(board, myPosition);
         }
         return moves;
-    }
-    @Override
-    public ChessPiece clone() {
-        try {
-            return (ChessPiece) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("Cloning not supported, but it should be since we implement Cloneable");
-        }
     }
 }

@@ -137,24 +137,4 @@ public class ChessBoard implements Cloneable {
         ChessPosition whiteKingPos = new ChessPosition(1, 5);
         addPiece(whiteKingPos, whiteKing);
     }
-    @Override
-    public ChessBoard clone(){
-        try{
-            ChessBoard clone = (ChessBoard) super.clone();
-            clone.squares = new ChessPiece[squares.length][squares[0].length];
-            for (int i = 0; i < squares.length; i++) {
-                for (int j = 0; j < squares[i].length; j++) {
-                    // If there's a piece in this square, clone it
-                    if (squares[i][j] != null) {
-                        clone.squares[i][j] = squares[i][j].clone();
-                    } else {
-                        clone.squares[i][j] = null;
-                    }
-                }
-            }
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

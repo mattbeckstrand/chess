@@ -44,7 +44,7 @@ public class KingMovesCalculator implements PieceMovesCalculator {
             row = cP.getRow();
             //first check: is the counter in bounds
             if (col > 8 || row > 8 || col <= 0 || row <= 0) {
-                break;
+                continue;
             }
             //second check: if it is in bounds and the position has no piece, add it
             else if (board.getPiece(cP) == null) {
@@ -55,11 +55,8 @@ public class KingMovesCalculator implements PieceMovesCalculator {
                 lOfMoves.add(col + i);
                 movesList.add(lOfMoves);
             }
-            //third check: we already know that it is null, just check if it is the same team color, if it is then skip
-            else if(board.getPiece(cP).getTeamColor() == tColor)
-            {
-                continue;
-            }
+            //third check: we already know that it is not null, just check if it is the same team color, if it is then skip
+
             //fourth check: if the team color isn't equal to ours, add the move
             else if(board.getPiece(cP).getTeamColor() != tColor){
                 ChessMove move = new ChessMove(startPosition, cP, null);
