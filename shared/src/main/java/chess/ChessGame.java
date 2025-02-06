@@ -65,7 +65,6 @@ public class ChessGame {
                 this.makeMove(move);
                 boolean kingCheck = this.isInCheck(tcolor);
                 if (!kingCheck) {
-                    System.out.println("Added King Check");
                     toReturnMoves.add(move);
                 }
             } catch (InvalidMoveException e) {
@@ -74,6 +73,16 @@ public class ChessGame {
 
         }
         this.board = ogBoard;
+        List<List<Integer>> intMoves = new ArrayList<>();
+        for (ChessMove move: toReturnMoves){
+            List<Integer> oneAdd = new ArrayList<>();
+            int row = move.getEndPosition().getRow();
+            int col = move.getEndPosition().getColumn();
+            oneAdd.add(row);
+            oneAdd.add(col);
+            intMoves.add(oneAdd);
+        }
+        System.out.println(intMoves);
         return toReturnMoves;
     }
 

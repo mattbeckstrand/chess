@@ -222,7 +222,6 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
                 break;
             }
         }
-        System.out.println(movesList);
 
 
         return moves;

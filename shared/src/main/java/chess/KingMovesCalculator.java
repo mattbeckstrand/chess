@@ -70,7 +70,6 @@ public class KingMovesCalculator implements PieceMovesCalculator {
                 movesList.add(lOfMoves);
             }
         }
-        System.out.println(movesList);
 
         return moves;
     }

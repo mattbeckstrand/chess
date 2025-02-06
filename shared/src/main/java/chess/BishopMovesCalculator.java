@@ -122,7 +122,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
                 break;
             }
         }
-        System.out.println(movesList);
 
 
         return moves;

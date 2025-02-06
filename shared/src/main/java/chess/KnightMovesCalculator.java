@@ -73,8 +73,6 @@ public class KnightMovesCalculator implements PieceMovesCalculator {
                 movesList.add(lOfMoves);
             }
         }
-        System.out.println(movesList);
-
         return moves;
     }
 }
