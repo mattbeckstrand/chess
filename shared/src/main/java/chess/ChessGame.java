@@ -191,13 +191,6 @@ public class ChessGame {
         return false;
     }
 
-    /**
-     * Determines if the given team is in stalemate, which here is defined as having
-     * no valid moves
-     *
-     * @param teamColor which team to check for stalemate
-     * @return True if the specified team is in stalemate, otherwise false
-     */
     public boolean isInStalemate(TeamColor teamColor) {
         Collection<ChessPosition> teamPositions = this.getTeamPositions(teamColor);
         if (isInCheck(teamColor)){
@@ -231,20 +224,11 @@ public class ChessGame {
         return positionList;
 
     }
-    /**
-     * Sets this game's chessboard with a given board
-     *
-     * @param board the new board to use
-     */
+
     public void setBoard(ChessBoard board) {
         this.board = board;
     }
 
-    /**
-     * Gets the current chessboard
-     *
-     * @return the chessboard
-     */
     public ChessBoard getBoard() {
         return this.board;
     }
