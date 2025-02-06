@@ -131,12 +131,6 @@ public class ChessGame {
         }
     }
 
-    /**
-     * Determines if the given team is in check
-     *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
-     */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPos = getKing(teamColor);
         int kingRow = kingPos.getRow();
@@ -182,12 +176,7 @@ public class ChessGame {
         }
         throw new IllegalStateException("No king found for team: " + teamColor);
     }
-    /**
-     * Determines if the given team is in checkmate
-     *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
-     */
+
     public boolean isInCheckmate(TeamColor teamColor) {
         Collection<ChessPosition> teamPositions = this.getTeamPositions(teamColor);
         Collection<ChessMove> comp = new ArrayList<>();
