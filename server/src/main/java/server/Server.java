@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.GameData.MemoryGameDataDao;
 import spark.*;
 import handlers.*;
 import dataaccess.Auth.*;
@@ -11,6 +12,7 @@ public class Server {
         Spark.port(desiredPort);
         MemoryUserDAO userDAO = new MemoryUserDAO();
         MemoryAuthDAO authDAO = new MemoryAuthDAO();
+        MemoryGameDataDao gameDAO = new MemoryGameDataDao();
 
         Spark.staticFiles.location("web");
 
@@ -20,6 +22,11 @@ public class Server {
         Spark.post("/user", new RegisterHandler(authDAO, userDAO));
         Spark.post("/session", new LoginHandler(authDAO, userDAO));
         Spark.delete("/session", new LogoutHandler(authDAO));
+        Spark.post("/game", new CreateGameHandler(gameDAO, authDAO));
+        Spark.put("/game", new JoinGameHandler(gameDAO, authDAO));
+        Spark.get("game", new ListGameHandler(authDAO, gameDAO));
+        Spark.delete("/db", new DeleteHandler(gameDAO, authDAO, userDAO));
+
 
         Spark.awaitInitialization();
         return Spark.port();

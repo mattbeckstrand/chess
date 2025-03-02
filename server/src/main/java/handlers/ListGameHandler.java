@@ -1,37 +1,40 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.User.MemoryUserDAO;
 import dataaccess.Auth.MemoryAuthDAO;
+import dataaccess.GameData.MemoryGameDataDao;
 import exception.ResponseException;
-import model.*;
-import service.RegisterService;
+import model.ErrorResponse;
+import model.GameData;
+import model.GameSummary;
+import model.ListGamesResponse;
+import service.ListGamesService;
 import spark.Route;
 import spark.Request;
 import spark.Response;
 
-public class RegisterHandler implements Route{
-    private final MemoryUserDAO userDao;
-    private final MemoryAuthDAO authDAO;
+import java.util.List;
 
-    public RegisterHandler(MemoryAuthDAO authDAO, MemoryUserDAO userDao){
-        this.userDao = userDao;
+public class ListGameHandler implements Route{ ;
+    private final MemoryAuthDAO authDAO;
+    private final MemoryGameDataDao gameDAO;
+
+    public ListGameHandler(MemoryAuthDAO authDAO, MemoryGameDataDao gameDAO){
         this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
     }
 
     @Override
     public Object handle(Request req, Response res) throws ResponseException {
         Gson gson = new Gson();
+        String authToken = req.headers("authorization");
         try {
-            UserData userData = gson.fromJson(req.body(), UserData.class);
-            RegisterService service = new RegisterService(authDAO, userDao, userData);
-            service.checkForUser();
-            service.addUserData();
-            AuthData authData = service.addAuth();
-
+            ListGamesService service = new ListGamesService(authToken, authDAO, gameDAO);
+            List<GameSummary> games = service.listGameData();
+            ListGamesResponse response = new ListGamesResponse(games);
             res.type("application/json");
             res.status(200);
-            return gson.toJson(authData);
+            return gson.toJson(response);
         } catch (ResponseException e) {
             res.status(400);
             return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
