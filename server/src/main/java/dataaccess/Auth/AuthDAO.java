@@ -9,6 +9,8 @@ public interface AuthDAO {
 
     AuthData findAuth(String userName) throws DataAccessException;
 
+    AuthData findAuthByToken(String authToken) throws DataAccessException;
+
     void deleteAuth(String username) throws DataAccessException;
 
     String generateToken() throws DataAccessException;

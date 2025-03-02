@@ -19,6 +19,7 @@ public class Server {
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.post("/user", new RegisterHandler(authDAO, userDAO));
         Spark.post("/session", new LoginHandler(authDAO, userDAO));
+        Spark.delete("/session", new LogoutHandler(authDAO));
 
         Spark.awaitInitialization();
         return Spark.port();
