@@ -3,7 +3,7 @@ import model.*;
 
 import java.util.HashMap;
 
-public class MemoryUserDao implements UserDAO{
+public class MemoryUserDAO implements UserDAO{
     final private HashMap<String, UserData> userData = new HashMap<>();
 
     public void addUser(UserData user){

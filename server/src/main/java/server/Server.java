@@ -9,7 +9,7 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-        MemoryUserDao userDAO = new MemoryUserDao();
+        MemoryUserDAO userDAO = new MemoryUserDAO();
         MemoryAuthDAO authDAO = new MemoryAuthDAO();
 
         Spark.staticFiles.location("web");
@@ -18,6 +18,7 @@ public class Server {
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.post("/user", new RegisterHandler(authDAO, userDAO));
+        Spark.post("/session", new LoginHandler(authDAO, userDAO));
 
         Spark.awaitInitialization();
         return Spark.port();

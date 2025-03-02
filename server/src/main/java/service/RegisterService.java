@@ -1,24 +1,21 @@
 package service;
 
-import java.util.UUID;
 import exception.ResponseException;
-import dataaccess.User.MemoryUserDao;
+import dataaccess.User.MemoryUserDAO;
 import dataaccess.Auth.MemoryAuthDAO;
-import model.RegisterRequest;
 import model.UserData;
 import model.AuthData;
-import passoff.exception.ResponseParseException;
 
 public class RegisterService {
     private final String userName;
     private final String password;
     private final String email;
-    private final MemoryUserDao userDao;
+    private final MemoryUserDAO userDao;
     private final MemoryAuthDAO authDAO;
     private final UserData userData;
 
 
-    public RegisterService(MemoryAuthDAO authDAO, MemoryUserDao userDao, UserData request) {
+    public RegisterService(MemoryAuthDAO authDAO, MemoryUserDAO userDao, UserData request) {
         this.userName = request.getUsername();
         this.password = request.getPassword();
         this.email = request.getEmail();
@@ -38,7 +35,9 @@ public class RegisterService {
 
     public AuthData addAuth() {
         String authToken = authDAO.generateToken();
-        return new AuthData(userName, authToken);
+        AuthData auth = new AuthData(userName, authToken);
+        authDAO.addAuth(auth);
+        return auth;
     }
 
 
