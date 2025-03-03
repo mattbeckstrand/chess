@@ -28,7 +28,7 @@ public class CreateGameServiceTest {
     }
 
     @Test
-    @DisplayName("Login successful")
+    @DisplayName("Game created success")
     public void testGameCreated() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
@@ -44,8 +44,8 @@ public class CreateGameServiceTest {
     }
 
     @Test
-    @DisplayName("Unauthorized")
-    public void testUnauthorized() throws ResponseException{
+    @DisplayName("Unauthorized Game Creation")
+    public void testUnauthorizedGameCreation() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");

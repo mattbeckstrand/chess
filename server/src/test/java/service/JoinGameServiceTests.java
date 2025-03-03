@@ -28,7 +28,7 @@ public class JoinGameServiceTests {
     }
 
     @Test
-    @DisplayName("Login successful")
+    @DisplayName("Join game Successful")
     public void testJoinGame() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
@@ -47,7 +47,7 @@ public class JoinGameServiceTests {
     }
 
     @Test
-    @DisplayName("Unauthorized")
+    @DisplayName("Wrong color join game")
     public void testWrongColor() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 

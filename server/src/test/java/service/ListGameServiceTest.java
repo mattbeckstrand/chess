@@ -29,8 +29,8 @@ public class ListGameServiceTest {
     }
 
     @Test
-    @DisplayName("Login successful")
-    public void testJoinGame() throws ResponseException {
+    @DisplayName("List games successful")
+    public void testListGames() throws ResponseException {
         Gson gson = new Gson();
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
@@ -52,8 +52,8 @@ public class ListGameServiceTest {
     }
 
     @Test
-    @DisplayName("Unauthorized")
-    public void testWrongColor() throws ResponseException{
+    @DisplayName("Unauthorized list games")
+    public void testUnauthorizedListGames() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
