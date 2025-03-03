@@ -1,4 +1,4 @@
-package dataaccess.User;
+package dataaccess.user;
 import dataaccess.DataAccessException;
 import model.UserData;
 
@@ -7,7 +7,6 @@ public interface UserDAO {
 
     UserData findUser(String userName) throws DataAccessException;
 
-    void deleteUser(String userName) throws DataAccessException;
 
     void clear() throws DataAccessException;
 

@@ -1,10 +1,10 @@
 package server;
 
-import dataaccess.GameData.MemoryGameDataDao;
+import dataaccess.gameData.MemoryGameDataDao;
 import spark.*;
 import handlers.*;
-import dataaccess.Auth.*;
-import dataaccess.User.*;
+import dataaccess.auth.*;
+import dataaccess.user.*;
 
 public class Server {
 

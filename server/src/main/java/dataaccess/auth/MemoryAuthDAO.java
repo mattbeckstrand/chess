@@ -1,9 +1,8 @@
-package dataaccess.Auth;
+package dataaccess.auth;
 
 import java.util.*;
 
 import model.AuthData;
-import model.UserData;
 
 public class MemoryAuthDAO implements AuthDAO {
     final private HashMap<String, Set<String>> userToTokens = new HashMap<>();  // Stores latest token per user
@@ -14,24 +13,6 @@ public class MemoryAuthDAO implements AuthDAO {
         userToTokens.putIfAbsent(auth.username(), new HashSet<>());  // Ensure user has a set of tokens
         userToTokens.get(auth.username()).add(auth.authToken());     // Add new token to user's set
         tokenToAuth.put(auth.authToken(), auth);
-    }
-    @Override
-    public AuthData findAuthByUsername( String username) {
-        Set<String> tokens = userToTokens.get(username);
-        if (tokens == null || tokens.isEmpty()) return null;
-        String latestToken = tokens.iterator().next();
-        return tokenToAuth.get(latestToken);
-    }
-
-    @Override
-    public void deleteAuthByUsername(String username) {
-        Set<String> tokens = userToTokens.get(username);
-        if (tokens != null) {
-            for (String token : tokens) {
-                tokenToAuth.remove(token);  // Remove all tokens for this user
-            }
-            userToTokens.remove(username);
-        }
     }
 
     @Override

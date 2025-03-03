@@ -1,7 +1,6 @@
 package service;
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
 import exception.ResponseException;
 import model.*;
 

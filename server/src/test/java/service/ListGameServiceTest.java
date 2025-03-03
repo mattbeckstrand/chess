@@ -1,12 +1,11 @@
 package service;
 
 import com.google.gson.Gson;
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
-import model.GameData;
 import model.LoginRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -71,7 +70,7 @@ public class ListGameServiceTest {
         authDao.deleteAuthByToken(authToken);
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, listService::listGameData);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401 unauthorized");
+        Assertions.assertEquals(401, thrown.statusCode(), "Should return 401 unauthorized");
 
     }
 

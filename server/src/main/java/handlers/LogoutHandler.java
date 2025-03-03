@@ -1,8 +1,7 @@
 package handlers;
 
 
-import dataaccess.Auth.AuthDAO;
-import dataaccess.Auth.MemoryAuthDAO;
+import dataaccess.auth.MemoryAuthDAO;
 
 import exception.ResponseException;
 import model.ErrorResponse;
@@ -29,7 +28,7 @@ public class LogoutHandler implements Route {
             res.status(200);
             return "{}";
         } catch (ResponseException e){
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (Exception e){
             res.status(500);

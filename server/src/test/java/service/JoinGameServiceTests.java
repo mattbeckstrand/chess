@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
@@ -63,7 +63,7 @@ public class JoinGameServiceTests {
         JoinGameService joinGameServ= new JoinGameService(gameDataDao, authToken, authDao, 1, "BLUE");
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, joinGameServ::joinGame);
-        Assertions.assertEquals(400, thrown.StatusCode(), "Should return 400");
+        Assertions.assertEquals(400, thrown.statusCode(), "Should return 400");
 
     }
 

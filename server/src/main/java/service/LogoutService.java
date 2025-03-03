@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
+import dataaccess.auth.MemoryAuthDAO;
 import exception.ResponseException;
 import model.AuthData;
 

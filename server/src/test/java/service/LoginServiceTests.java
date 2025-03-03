@@ -1,7 +1,7 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
 import model.LoginRequest;
@@ -45,7 +45,7 @@ public class LoginServiceTests {
         LoginService service = new LoginService(authDao, userDao, request);
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, service::checkUserPassword);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
+        Assertions.assertEquals(401, thrown.statusCode(), "Should return 401");
 
 
 

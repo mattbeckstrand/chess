@@ -1,10 +1,9 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
-import model.LoginRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +45,7 @@ public class RegisterServiceTests {
 
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, service::addUserData);
-        Assertions.assertEquals(403, thrown.StatusCode(), "Should return 403");
+        Assertions.assertEquals(403, thrown.statusCode(), "Should return 403");
     }
 
 

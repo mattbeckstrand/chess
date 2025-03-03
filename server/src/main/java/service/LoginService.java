@@ -1,10 +1,9 @@
 package service;
 
-import dataaccess.User.MemoryUserDAO;
-import dataaccess.Auth.MemoryAuthDAO;
+import dataaccess.user.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
 import exception.ResponseException;
 import model.*;
-import exception.ResponseException;
 
 public class LoginService {
     private final MemoryUserDAO userDao;

@@ -1,8 +1,8 @@
 package handlers;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import spark.Route;
 import spark.Response;

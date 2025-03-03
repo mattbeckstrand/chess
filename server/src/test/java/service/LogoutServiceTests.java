@@ -1,10 +1,9 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
-import model.LoginRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ public class LogoutServiceTests {
 
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, serv::checkAuth);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
+        Assertions.assertEquals(401, thrown.statusCode(), "Should return 401");
     }
 
     @Test
@@ -56,7 +55,7 @@ public class LogoutServiceTests {
 
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, serv::checkAuth);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
+        Assertions.assertEquals(401, thrown.statusCode(), "Should return 401");
 
 
     }

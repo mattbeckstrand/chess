@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
+import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
@@ -59,7 +59,7 @@ public class CreateGameServiceTest {
 
 
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, gameService::addGameData);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
+        Assertions.assertEquals(401, thrown.statusCode(), "Should return 401");
 
     }
 

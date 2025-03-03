@@ -1,11 +1,10 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
 import exception.ResponseException;
 import model.ErrorResponse;
-import model.GameData;
 import model.GameSummary;
 import model.ListGamesResponse;
 import service.ListGamesService;
@@ -36,7 +35,7 @@ public class ListGameHandler implements Route{ ;
             res.status(200);
             return gson.toJson(response);
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
         } catch (Exception e) {
             res.status(500);

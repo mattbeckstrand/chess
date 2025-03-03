@@ -1,4 +1,4 @@
-package dataaccess.GameData;
+package dataaccess.gameData;
 
 import chess.ChessGame;
 import model.GameData;
@@ -22,10 +22,6 @@ public class MemoryGameDataDao implements GameDataDAO{
     @Override
     public HashMap<Integer, GameData> listGames(){
         return gameDataList;
-    }
-    @Override
-    public void updateGame(int gameID){
-
     }
 
     @Override

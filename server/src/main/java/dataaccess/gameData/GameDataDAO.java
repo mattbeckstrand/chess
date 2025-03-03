@@ -1,11 +1,8 @@
-package dataaccess.GameData;
+package dataaccess.gameData;
 
 import model.GameData;
-import chess.ChessGame;
 import dataaccess.DataAccessException;
 
-import javax.xml.crypto.Data;
-import java.util.Collection;
 import java.util.HashMap;
 
 public interface GameDataDAO {
@@ -14,8 +11,6 @@ public interface GameDataDAO {
     GameData getGame(int gameId) throws DataAccessException;
 
     HashMap<Integer, GameData> listGames() throws DataAccessException;
-
-    void updateGame(int gameID) throws DataAccessException;
 
     void addWhitePlayer(int gameId, String username) throws DataAccessException;
 

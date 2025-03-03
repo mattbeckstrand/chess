@@ -1,9 +1,8 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.Auth.MemoryAuthDAO;
-import dataaccess.GameData.MemoryGameDataDao;
-import dataaccess.User.MemoryUserDAO;
+import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gameData.MemoryGameDataDao;
 import exception.ResponseException;
 import model.*;
 import service.JoinGameService;
@@ -33,7 +32,7 @@ public class JoinGameHandler implements Route {
             res.status(200);
             return "{}";
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             res.status(500);
