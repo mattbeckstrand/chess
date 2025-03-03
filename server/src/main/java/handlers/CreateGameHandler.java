@@ -24,13 +24,24 @@ public class CreateGameHandler implements Route {
 
     public Object handle(Request req, Response res) throws ResponseException {
         Gson gson = new Gson();
-        String authToken = req.headers("Authorization");
-        CreateGameRequest request = gson.fromJson(req.body(), CreateGameRequest.class);
-        CreateGameService service = new CreateGameService(gameDataDao, authToken, authDao, request.gameName());
-        GameData game = service.addGameData();
-        res.status(200);
-        res.type("application/json");
-        return gson.toJson(new CreateGameResponse(game.getGameID()));
+        try {
+            String authToken = req.headers("Authorization");
+            CreateGameRequest request = gson.fromJson(req.body(), CreateGameRequest.class);
+            CreateGameService service = new CreateGameService(gameDataDao, authToken, authDao, request.gameName());
+            GameData game = service.addGameData();
+            String jsonResponse = gson.toJson(new CreateGameResponse(game.getGameID()));
+            System.out.println("Response JSON: " + jsonResponse);
+
+            res.status(200);
+            res.type("application/json");
+            return jsonResponse;
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
+        } catch (Exception e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("internal server error"));
+        }
     }
 
 }

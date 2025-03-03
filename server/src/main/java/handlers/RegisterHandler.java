@@ -33,7 +33,7 @@ public class RegisterHandler implements Route{
             res.status(200);
             return gson.toJson(authData);
         } catch (ResponseException e) {
-            res.status(400);
+            res.status(e.StatusCode());
             return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
         } catch (Exception e) {
             res.status(500);

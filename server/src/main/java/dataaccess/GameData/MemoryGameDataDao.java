@@ -1,29 +1,23 @@
 package dataaccess.GameData;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
-import exception.ResponseException;
-import jdk.jfr.Percentage;
 import model.GameData;
-
-import javax.xml.crypto.Data;
 import java.util.HashMap;
-import java.util.Collection;
 
 public class MemoryGameDataDao implements GameDataDAO{
 
     final private HashMap<Integer, GameData> gameDataList = new HashMap<>();
-    private int nextId = 1;
+    private int nextID = 1;
 
     @Override
     public GameData createGame(String gameName)  {
-        GameData game = new GameData(nextId++, null,null, gameName, new ChessGame());
+        GameData game = new GameData(nextID++, null,null, gameName, new ChessGame());
         gameDataList.put(game.getGameID(), game);
         return game;
     }
     @Override
-    public GameData getGame(int gameId) {
-        return gameDataList.get(gameId);
+    public GameData getGame(int gameID) {
+        return gameDataList.get(gameID);
     }
     @Override
     public HashMap<Integer, GameData> listGames(){
@@ -37,12 +31,18 @@ public class MemoryGameDataDao implements GameDataDAO{
     @Override
     public void addWhitePlayer(int gameID, String username){
         GameData game = gameDataList.get(gameID);
+        if (game != null){
         game.setWhiteUsername(username);
+        gameDataList.put(gameID, game);
         }
+    }
     @Override
     public void addBlackPlayer(int gameID, String username){
         GameData game = gameDataList.get(gameID);
-        game.setBlackUsername(username);
+        if (game != null){
+            game.setBlackUsername(username);
+            gameDataList.put(gameID, game);
+        }
     }
 
     @Override

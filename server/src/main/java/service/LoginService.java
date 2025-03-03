@@ -33,11 +33,7 @@ public class LoginService {
     }
 
     public AuthData addAuth() throws ResponseException{
-        AuthData oldAuth = authDAO.findAuth(request.username());
-        if(oldAuth != null){
-            throw new ResponseException(500, "Error: already logged in");
-        }
-
+        authDAO.deleteAuth(request.username());
         String authToken = authDAO.generateToken();
         String username = request.username();
         AuthData auth = new AuthData(username, authToken);

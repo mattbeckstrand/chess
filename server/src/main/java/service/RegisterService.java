@@ -25,6 +25,11 @@ public class RegisterService {
     }
     public void checkForUser() throws ResponseException {
         UserData user = userDao.findUser(this.userName);
+        if (this.userName == null || this.userName.isBlank() ||
+                this.password == null || this.password.isBlank() ||
+                this.email == null || this.email.isBlank()) {
+            throw new ResponseException(400, "Error: bad request");
+        }
         if(user != null){
             throw new ResponseException(403, "Error: already taken");
         }
