@@ -10,4 +10,7 @@ public interface UserDAO {
     void deleteUser(String userName) throws DataAccessException;
 
     void clear() throws DataAccessException;
+
+    boolean isEmpty() throws DataAccessException;
+
 }

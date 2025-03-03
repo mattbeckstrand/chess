@@ -50,4 +50,10 @@ public class MemoryGameDataDao implements GameDataDAO{
         gameDataList.clear();
     }
 
+    @Override
+    public boolean isEmpty() {
+        return gameDataList.isEmpty();
+    }
+
+
 }

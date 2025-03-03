@@ -17,4 +17,6 @@ public interface AuthDAO {
     String generateToken() throws DataAccessException;
 
     void clear() throws DataAccessException;
+
+    boolean isEmpty() throws DataAccessException;
 }

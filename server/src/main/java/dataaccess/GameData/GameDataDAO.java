@@ -4,6 +4,7 @@ import model.GameData;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 
+import javax.xml.crypto.Data;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -21,5 +22,7 @@ public interface GameDataDAO {
     void addBlackPlayer(int gameId, String username) throws  DataAccessException;
 
     void clear() throws DataAccessException;
+
+    boolean isEmpty() throws DataAccessException;
 
 }

@@ -23,7 +23,7 @@ public class LogoutServiceTests {
         userDao = new MemoryUserDAO();
     }
     @Test
-    @DisplayName("Login successful")
+    @DisplayName("Logout successful")
     public void testSuccessfulLogout() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
@@ -34,22 +34,29 @@ public class LogoutServiceTests {
         String authToken = auth.authToken();
 
         LogoutService serv = new LogoutService(authDao,authToken);
+        serv.deleteAuth();
 
-        Assertions.assertEquals("", auth.username(), "Usernames don't match");
-        Assertions.assertNotNull(auth.authToken(), "Auth Token Null");
+
+        ResponseException thrown = Assertions.assertThrows(ResponseException.class, serv::checkAuth);
+        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
     }
 
     @Test
-    @DisplayName("Wrong password")
+    @DisplayName("Not logged in")
     public void testThrowError() throws ResponseException{
-        userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
-        LoginRequest request = new LoginRequest("testKing", "kingoftests1");
-        LoginService service = new LoginService(authDao, userDao, request);
+        UserData request = new UserData("testKing", "kingoftests12", "test@example.com");
+        RegisterService regService = new RegisterService(authDao, userDao, request);
 
-        ResponseException thrown = Assertions.assertThrows(ResponseException.class, service::checkUserPassword);
+        AuthData auth = regService.addAuth();
+        String authToken = auth.authToken();
+
+        LogoutService serv = new LogoutService(authDao,authToken);
+        serv.deleteAuth();
+
+
+        ResponseException thrown = Assertions.assertThrows(ResponseException.class, serv::checkAuth);
         Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
-
 
 
     }

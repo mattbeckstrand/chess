@@ -66,5 +66,10 @@ public class MemoryAuthDAO implements AuthDAO {
         tokenToAuth.clear();
         userToTokens.clear();
     }
+    @Override
+    public boolean isEmpty() {
+        return (tokenToAuth.isEmpty() && userToTokens.isEmpty());
+    }
+
 
 }
