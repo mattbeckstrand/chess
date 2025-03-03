@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.auth.MemoryAuthDAO;
-import dataaccess.gameData.MemoryGameDataDao;
+import dataaccess.gamedata.MemoryGameDataDao;
 import dataaccess.user.MemoryUserDAO;
 
 public class DeleteService {
