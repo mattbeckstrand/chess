@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-public class CreateGameServiceTest {
+public class JoinGameServiceTests {
     private MemoryAuthDAO authDao;
     private MemoryGameDataDao gameDataDao;
     private MemoryUserDAO userDao;
@@ -29,7 +29,7 @@ public class CreateGameServiceTest {
 
     @Test
     @DisplayName("Login successful")
-    public void testGameCreated() throws ResponseException{
+    public void testJoinGame() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
@@ -39,13 +39,16 @@ public class CreateGameServiceTest {
         String authToken = auth.authToken();
 
         CreateGameService gameService = new CreateGameService(gameDataDao, authToken, authDao, "gameName");
-        GameData game = gameService.addGameData();
-        Assertions.assertEquals(1, game.getGameID(), "Id's dont match");
+        gameService.addGameData();
+
+        JoinGameService joinGame = new JoinGameService(gameDataDao, authToken, authDao, 1, "WHITE");
+        GameData joinedGameData = joinGame.joinGame();
+        Assertions.assertEquals("testKing", joinedGameData.getWhiteUsername(), "White Username doesn't match");
     }
 
     @Test
     @DisplayName("Unauthorized")
-    public void testUnauthorized() throws ResponseException{
+    public void testWrongColor() throws ResponseException{
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
@@ -55,11 +58,12 @@ public class CreateGameServiceTest {
         String authToken = auth.authToken();
 
         CreateGameService gameService = new CreateGameService(gameDataDao, authToken, authDao, "gameName");
-        authDao.deleteAuthByToken(authToken);
+        gameService.addGameData();
 
+        JoinGameService joinGameServ= new JoinGameService(gameDataDao, authToken, authDao, 1, "BLUE");
 
-        ResponseException thrown = Assertions.assertThrows(ResponseException.class, gameService::addGameData);
-        Assertions.assertEquals(401, thrown.StatusCode(), "Should return 401");
+        ResponseException thrown = Assertions.assertThrows(ResponseException.class, joinGameServ::joinGame);
+        Assertions.assertEquals(400, thrown.StatusCode(), "Should return 400");
 
     }
 
