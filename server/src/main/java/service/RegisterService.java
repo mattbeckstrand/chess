@@ -34,7 +34,8 @@ public class RegisterService {
             throw new ResponseException(403, "Error: already taken");
         }
     }
-    public void addUserData() {
+    public void addUserData() throws ResponseException{
+        checkForUser();
         userDao.addUser(userData);
     }
 

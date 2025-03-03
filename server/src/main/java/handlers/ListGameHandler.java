@@ -36,7 +36,7 @@ public class ListGameHandler implements Route{ ;
             res.status(200);
             return gson.toJson(response);
         } catch (ResponseException e) {
-            res.status(400);
+            res.status(e.StatusCode());
             return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
         } catch (Exception e) {
             res.status(500);

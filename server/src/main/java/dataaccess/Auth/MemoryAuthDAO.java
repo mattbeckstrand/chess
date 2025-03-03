@@ -6,27 +6,56 @@ import model.AuthData;
 import model.UserData;
 
 public class MemoryAuthDAO implements AuthDAO {
-    final private HashMap<String, AuthData> authData = new HashMap<>();
+    final private HashMap<String, Set<String>> userToTokens = new HashMap<>();  // Stores latest token per user
+    final private HashMap<String, AuthData> tokenToAuth = new HashMap<>();
+
     @Override
     public void addAuth(AuthData auth){
-        authData.put(auth.username(), auth);
+        userToTokens.putIfAbsent(auth.username(), new HashSet<>());  // Ensure user has a set of tokens
+        userToTokens.get(auth.username()).add(auth.authToken());     // Add new token to user's set
+        tokenToAuth.put(auth.authToken(), auth);
     }
     @Override
-    public AuthData findAuth( String username) {
-        return authData.get(username);
+    public AuthData findAuthByUsername( String username) {
+        Set<String> tokens = userToTokens.get(username);
+        if (tokens == null || tokens.isEmpty()) return null;
+        String latestToken = tokens.iterator().next();
+        return tokenToAuth.get(latestToken);
     }
+
     @Override
-    public void deleteAuth(String username){
-        authData.remove(username);
+    public void deleteAuthByUsername(String username) {
+        Set<String> tokens = userToTokens.get(username);
+        if (tokens != null) {
+            for (String token : tokens) {
+                tokenToAuth.remove(token);  // Remove all tokens for this user
+            }
+            userToTokens.remove(username);
+        }
     }
+
     @Override
-    public AuthData findAuthByToken(String authToken){
-        for (AuthData auth : authData.values()){
-            if(auth.authToken().equals(authToken)){
-                return auth;
+    public void deleteAuthByToken(String authToken) {
+        AuthData auth = tokenToAuth.remove(authToken);  // Remove from tokenToAuth
+        if (auth != null) {
+            Set<String> tokens = userToTokens.get(auth.username());
+            if (tokens != null) {
+                tokens.remove(authToken);  // Remove only this token from the user's set
+                if (tokens.isEmpty()) {
+                    userToTokens.remove(auth.username());  // Remove the user entry if no tokens left
+                }
             }
         }
-        return null;
+    }
+
+    @Override
+    public AuthData findAuthByToken(String authToken){
+        AuthData authData = tokenToAuth.get(authToken);
+        if (authData == null) {
+            System.out.println("Auth Token Not Found: " + authToken);
+            return null;
+        } return authData;
+
     }
     @Override
     public String generateToken(){
@@ -34,7 +63,8 @@ public class MemoryAuthDAO implements AuthDAO {
     }
     @Override
     public void clear() {
-        authData.clear();
+        tokenToAuth.clear();
+        userToTokens.clear();
     }
 
 }

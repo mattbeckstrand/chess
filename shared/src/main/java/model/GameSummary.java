@@ -4,8 +4,8 @@ public record GameSummary(int gameID, String gameName, String whiteUsername, Str
     public GameSummary(int gameID, String gameName, String whiteUsername, String blackUsername) {
         this.gameID = gameID;
         this.gameName = gameName;
-        this.whiteUsername = (whiteUsername != null) ? whiteUsername : "";
-        this.blackUsername = (blackUsername != null) ? blackUsername : "";
+        this.whiteUsername = whiteUsername;
+        this.blackUsername = blackUsername;
     }
 }
 

@@ -6,11 +6,13 @@ import model.*;
 public interface AuthDAO {
     void addAuth(AuthData auth) throws DataAccessException;
 
-    AuthData findAuth(String userName) throws DataAccessException;
+    AuthData findAuthByUsername(String userName) throws DataAccessException;
 
     AuthData findAuthByToken(String authToken) throws DataAccessException;
 
-    void deleteAuth(String username) throws DataAccessException;
+    void deleteAuthByUsername(String username) throws DataAccessException;
+
+    void deleteAuthByToken(String username) throws DataAccessException;
 
     String generateToken() throws DataAccessException;
 

@@ -21,23 +21,24 @@ public class LoginService {
 
     public void checkUserDataExists() throws ResponseException {
         if(this.userData == null){
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "Error: unauthorized data doesn't exist");
         }
     }
     public void checkUserPassword() throws ResponseException{
         String storedPassword = this.userData.getPassword();
         String loginPassword = this.request.password();
+
         if(!storedPassword.equals(loginPassword)){
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "Error: unauthorized password checked");
         }
+        System.out.println("Password checked and good");
     }
 
     public AuthData addAuth() throws ResponseException{
-        authDAO.deleteAuth(request.username());
         String authToken = authDAO.generateToken();
-        String username = request.username();
-        AuthData auth = new AuthData(username, authToken);
+        AuthData auth = new AuthData(request.username(), authToken);
         authDAO.addAuth(auth);
+        System.out.println("Auth added here: " + request.username() +  " " + authToken);
         return auth;
     }
 }

@@ -348,10 +348,12 @@ public class StandardAPITests {
     public void uniqueAuthorizationTokens() {
         TestAuthResult loginOne = serverFacade.login(existingUser);
         assertHttpOk(loginOne);
+        System.out.println("Login one authToken: " + loginOne.getAuthToken());
         Assertions.assertNotNull(loginOne.getAuthToken(), "Login result did not contain an authToken");
 
         TestAuthResult loginTwo = serverFacade.login(existingUser);
         assertHttpOk(loginTwo);
+        System.out.println("Login two authToken: " + loginTwo.getAuthToken());
         Assertions.assertNotNull(loginTwo.getAuthToken(), "Login result did not contain an authToken");
 
         Assertions.assertNotEquals(existingAuth, loginOne.getAuthToken(),
@@ -365,11 +367,12 @@ public class StandardAPITests {
         TestCreateResult createResult = serverFacade.createGame(createRequest, existingAuth);
         assertHttpOk(createResult);
 
-
+        System.out.println("logging out existing user");
         TestResult logoutResult = serverFacade.logout(existingAuth);
+
         assertHttpOk(logoutResult);
 
-
+        System.out.println("join Request");
         TestJoinRequest joinRequest = new TestJoinRequest(ChessGame.TeamColor.WHITE, createResult.getGameID());
         TestResult joinResult = serverFacade.joinPlayer(joinRequest, loginOne.getAuthToken());
         assertHttpOk(joinResult);

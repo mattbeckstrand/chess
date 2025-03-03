@@ -16,12 +16,11 @@ public class LogoutService {
         AuthData auth = authDao.findAuthByToken(authToken);
 
         if (auth == null) {
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "Error: unauthorized check auth null");
         }
     }
     public void deleteAuth(){
-        AuthData auth = authDao.findAuthByToken(authToken);
-        authDao.deleteAuth(auth.username());
+        authDao.deleteAuthByToken(authToken);
 
     }
 }

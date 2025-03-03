@@ -57,7 +57,7 @@ public class JoinGameService {
             gameDataDao.addBlackPlayer(gameId, username);
         }
 
-        return game;
+        return gameDataDao.getGame(gameId);
     }
 }
 

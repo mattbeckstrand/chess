@@ -25,7 +25,6 @@ public class RegisterHandler implements Route{
         try {
             UserData userData = gson.fromJson(req.body(), UserData.class);
             RegisterService service = new RegisterService(authDAO, userDao, userData);
-            service.checkForUser();
             service.addUserData();
             AuthData authData = service.addAuth();
 
