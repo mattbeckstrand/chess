@@ -34,6 +34,8 @@ public class ListGamesService {
 
         ArrayList<GameData> gameDataList = new ArrayList<>(games.values());
 
+
+
         return gameDataList.stream()
                 .map(game -> new GameSummary(game.getGameID(), game.getGameName(), game.getWhiteUsername(), game.getBlackUsername()))
                 .collect(Collectors.toList());
