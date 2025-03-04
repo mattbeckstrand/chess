@@ -18,7 +18,7 @@ public class GenerateMovesInDirection {
         this.startPosition = startPosition;
         this.directions = directions;
     }
-        public Collection<ChessMove> callGenMoves(){
+        public Collection<ChessMove> callGenMovesBRQ(){
             this.moves = new ArrayList<ChessMove>();
             this.startingPiece =  board.getPiece(startPosition);
             this.tColor = startingPiece.getTeamColor();
@@ -57,6 +57,36 @@ public class GenerateMovesInDirection {
 
                 i++;
             }
+    }
+    public Collection<ChessMove> generateKingKnightMoves() {
+        this.moves = new ArrayList<ChessMove>();
+        this.startingPiece =  board.getPiece(startPosition);
+        this.tColor = startingPiece.getTeamColor();
+        int row = startPosition.getRow();
+        int col = startPosition.getColumn();
+
+        for (int[] dir : directions) {
+            this.dirRow = dir[0];
+            this.dirCol = dir[1];
+            int newRow = row + dirRow;
+            int newCol = col + dirCol;
+            if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
+                continue;
+            }
+
+            ChessPosition endPosition = new ChessPosition(newRow, newCol);
+            ChessPiece pieceAtEnd = board.getPiece(endPosition);
+
+            if (pieceAtEnd == null) {
+                moves.add(new ChessMove(startPosition, endPosition, null));
+            } else {
+                if (pieceAtEnd.getTeamColor() != tColor) {
+                    moves.add(new ChessMove(startPosition, endPosition, null));
+                }
+
+            }
+        }
+        return moves;
     }
 }
 

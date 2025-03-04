@@ -20,7 +20,7 @@ public class QueenMovesCalculator implements PieceMovesCalculator {
         };
         GenerateMovesInDirection genMoves = new GenerateMovesInDirection(board, position, directions);
 
-        return genMoves.callGenMoves();
+        return genMoves.callGenMovesBRQ();
     }
 }
 
