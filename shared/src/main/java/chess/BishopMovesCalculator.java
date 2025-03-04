@@ -16,6 +16,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
         };
         GenerateMovesInDirection genMoves = new GenerateMovesInDirection(board, position, directions);
 
-        return genMoves.generateKingKnightMoves();
+        return genMoves.callGenMovesBRQ();
     }
 }
