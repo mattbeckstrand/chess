@@ -137,24 +137,28 @@ public class ChessGame {
         int kingColumn = kingPos.getColumn();
         int i = 1;
         int j;
-        while (i < 9){
+
+        while (i < 9) {
             j = 1;
-            while (j < 9){
-                ChessPosition position = new ChessPosition(i,j);
+            while (j < 9) {
+                ChessPosition position = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(position);
-                if (piece != null && piece.getTeamColor() != teamColor){
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
-                    for (ChessMove move : moves) {
-                        ChessPosition endPosition = move.getEndPosition();
-                        if (endPosition.getRow() == kingRow && endPosition.getColumn() == kingColumn) {
-                            return true;
-                        }
+
+                if (piece == null || piece.getTeamColor() == teamColor) {
+                    j++;
+                    continue;
+                }
+
+                Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                for (ChessMove move : moves) {
+                    ChessPosition endPosition = move.getEndPosition();
+                    if (endPosition.getRow() == kingRow && endPosition.getColumn() == kingColumn) {
+                        return true;
                     }
                 }
                 j++;
             }
             i++;
-
         }
         return false;
     }
@@ -167,7 +171,9 @@ public class ChessGame {
             j = 1;
             while (j < 9){
                 ChessPosition position = new ChessPosition(i,j);
-                if ( board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == teamColor){
+                if ( board.getPiece(position) != null
+                        && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING
+                        && board.getPiece(position).getTeamColor() == teamColor){
                     return position;
                 }
                 j++;

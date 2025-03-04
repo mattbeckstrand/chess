@@ -46,7 +46,9 @@ public class ListGameServiceTest {
 
         ListGamesService listService = new ListGamesService(authToken, authDao, gameDataDao);
 
-        Assertions.assertEquals("[{\"gameID\":1,\"gameName\":\"gameName\"},{\"gameID\":2,\"gameName\":\"gameName\"},{\"gameID\":3,\"gameName\":\"gameName\"}]", gson.toJson(listService.listGameData()), "List is not the same");
+        Assertions.assertEquals("[{\"gameID\":1,\"gameName\":\"gameName\"},{\"gameID\":2," +
+                "\"gameName\":\"gameName\"},{\"gameID\":3,\"gameName\":\"gameName\"}]",
+                gson.toJson(listService.listGameData()), "List is not the same");
 
     }
 
