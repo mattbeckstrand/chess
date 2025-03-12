@@ -1,6 +1,7 @@
 package service;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import dataaccess.user.MemoryUserDAO;
@@ -29,7 +30,7 @@ public class ListGameServiceTest {
 
     @Test
     @DisplayName("List games successful")
-    public void testListGames() throws ResponseException {
+    public void testListGames() throws ResponseException, DataAccessException {
         Gson gson = new Gson();
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
@@ -54,7 +55,7 @@ public class ListGameServiceTest {
 
     @Test
     @DisplayName("Unauthorized list games")
-    public void testUnauthorizedListGames() throws ResponseException{
+    public void testUnauthorizedListGames() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");

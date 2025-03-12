@@ -3,14 +3,14 @@ import dataaccess.DataAccessException;
 import model.*;
 
 
-public interface AuthDAO {
+public interface AuthDAO{
     void addAuth(AuthData auth) throws DataAccessException;
 
     AuthData findAuthByToken(String authToken) throws DataAccessException;
 
     void deleteAuthByToken(String username) throws DataAccessException;
 
-    String generateToken() throws DataAccessException;
+    String generateToken();
 
     void clear() throws DataAccessException;
 

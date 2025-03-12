@@ -1,6 +1,7 @@
 package handlers;
 
 
+import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
 
 import exception.ResponseException;
@@ -12,9 +13,9 @@ import spark.Response;
 import com.google.gson.Gson;
 
 public class LogoutHandler implements Route {
-    private final MemoryAuthDAO authDAO;
+    private final AuthDAO authDAO;
 
-    public LogoutHandler(MemoryAuthDAO authDAO){
+    public LogoutHandler(AuthDAO authDAO){
         this.authDAO = authDAO;
     }
     @Override

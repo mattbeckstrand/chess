@@ -1,19 +1,22 @@
 package handlers;
 
+import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gamedata.GameDataDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import dataaccess.user.MemoryUserDAO;
+import dataaccess.user.UserDAO;
 import exception.ResponseException;
 import spark.Route;
 import spark.Response;
 import spark.Request;
 
 public class DeleteHandler implements Route {
-    private final MemoryAuthDAO authDAO;
-    private final MemoryUserDAO userDAO;
-    private final MemoryGameDataDao gameDAO;
+    private final AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final GameDataDAO gameDAO;
 
-    public DeleteHandler(MemoryGameDataDao gameDAO, MemoryAuthDAO authDAO, MemoryUserDAO userDAO){
+    public DeleteHandler(GameDataDAO gameDAO, AuthDAO authDAO, UserDAO userDAO){
         this.authDAO = authDAO;
         this.userDAO = userDAO;
         this.gameDAO = gameDAO;

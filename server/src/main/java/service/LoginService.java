@@ -1,21 +1,29 @@
 package service;
 
+import dataaccess.DataAccessException;
+import dataaccess.auth.AuthDAO;
 import dataaccess.user.MemoryUserDAO;
 import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.user.UserDAO;
 import exception.ResponseException;
 import model.*;
 
 public class LoginService {
-    private final MemoryUserDAO userDao;
-    private final MemoryAuthDAO authDAO;
+    private final UserDAO userDao;
+    private final AuthDAO authDAO;
     private final LoginRequest request;
     private final UserData userData;
 
-    public LoginService(MemoryAuthDAO authDAO, MemoryUserDAO userDao, LoginRequest loginRequest){
+    public LoginService(AuthDAO authDAO, UserDAO userDao, LoginRequest loginRequest) throws ResponseException {
         this.userDao = userDao;
         this.authDAO = authDAO;
         this.request = loginRequest;
-        this.userData = userDao.findUser(request.username());
+        try {
+            this.userData = userDao.findUser(request.username());
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Database error: " + e.getMessage());
+        }
+
     }
 
     public void checkUserDataExists() throws ResponseException {
@@ -27,17 +35,19 @@ public class LoginService {
         String storedPassword = this.userData.getPassword();
         String loginPassword = this.request.password();
 
-        if(!storedPassword.equals(loginPassword)){
-            throw new ResponseException(401, "Error: unauthorized password checked");
+        if (!storedPassword.equals(loginPassword)) {
+            throw new ResponseException(401, "Error: Unauthorized incorrect password");
         }
-        System.out.println("Password checked and good");
     }
 
-    public AuthData addAuth() throws ResponseException{
+    public AuthData addAuth() throws ResponseException {
         String authToken = authDAO.generateToken();
         AuthData auth = new AuthData(request.username(), authToken);
-        authDAO.addAuth(auth);
-        System.out.println("Auth added here: " + request.username() +  " " + authToken);
+        try {
+            authDAO.addAuth(auth);
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Database error: " + e.getMessage());
+        }
         return auth;
     }
 }

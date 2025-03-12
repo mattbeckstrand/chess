@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import dataaccess.user.MemoryUserDAO;
@@ -29,7 +30,7 @@ public class CreateGameServiceTest {
 
     @Test
     @DisplayName("Game created success")
-    public void testGameCreated() throws ResponseException{
+    public void testGameCreated() throws DataAccessException, ResponseException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
@@ -45,7 +46,7 @@ public class CreateGameServiceTest {
 
     @Test
     @DisplayName("Unauthorized Game Creation")
-    public void testUnauthorizedGameCreation() throws ResponseException{
+    public void testUnauthorizedGameCreation() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");

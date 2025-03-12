@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.user.MemoryUserDAO;
 import exception.ResponseException;
@@ -24,7 +25,7 @@ public class LoginServiceTests {
     }
     @Test
     @DisplayName("Login successful")
-    public void testSuccessfulLogin() throws ResponseException{
+    public void testSuccessfulLogin() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
@@ -38,7 +39,7 @@ public class LoginServiceTests {
 
     @Test
     @DisplayName("Wrong password")
-    public void testWrongPassword() throws ResponseException{
+    public void testWrongPassword() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests1");

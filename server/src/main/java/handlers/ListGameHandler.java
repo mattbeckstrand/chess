@@ -1,7 +1,9 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.gamedata.GameDataDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import exception.ResponseException;
 import model.ErrorResponse;
@@ -15,10 +17,10 @@ import spark.Response;
 import java.util.List;
 
 public class ListGameHandler implements Route{ ;
-    private final MemoryAuthDAO authDAO;
-    private final MemoryGameDataDao gameDAO;
+    private final AuthDAO authDAO;
+    private final GameDataDAO gameDAO;
 
-    public ListGameHandler(MemoryAuthDAO authDAO, MemoryGameDataDao gameDAO){
+    public ListGameHandler(AuthDAO authDAO, GameDataDAO gameDAO){
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }

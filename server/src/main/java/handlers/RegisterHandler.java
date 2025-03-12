@@ -1,8 +1,9 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.user.MemoryUserDAO;
-import dataaccess.auth.MemoryAuthDAO;
+import dataaccess.*;
+import dataaccess.auth.AuthDAO;
+import dataaccess.user.UserDAO;
 import exception.ResponseException;
 import model.*;
 import service.RegisterService;
@@ -11,10 +12,10 @@ import spark.Request;
 import spark.Response;
 
 public class RegisterHandler implements Route{
-    private final MemoryUserDAO userDao;
-    private final MemoryAuthDAO authDAO;
+    private final UserDAO userDao;
+    private final AuthDAO authDAO;
 
-    public RegisterHandler(MemoryAuthDAO authDAO, MemoryUserDAO userDao){
+    public RegisterHandler(AuthDAO authDAO, UserDAO userDao){
         this.userDao = userDao;
         this.authDAO = authDAO;
     }

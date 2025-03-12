@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import dataaccess.user.MemoryUserDAO;
@@ -29,7 +30,7 @@ public class JoinGameServiceTests {
 
     @Test
     @DisplayName("Join game Successful")
-    public void testJoinGame() throws ResponseException{
+    public void testJoinGame() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
@@ -48,7 +49,7 @@ public class JoinGameServiceTests {
 
     @Test
     @DisplayName("Wrong color join game")
-    public void testWrongColor() throws ResponseException{
+    public void testWrongColor() throws ResponseException, DataAccessException {
         userDao.addUser(new UserData("testKing", "kingoftests12", "test@example.com"));
 
         LoginRequest request = new LoginRequest("testKing", "kingoftests12");
