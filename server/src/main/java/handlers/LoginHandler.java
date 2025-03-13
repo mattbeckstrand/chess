@@ -19,7 +19,7 @@ public class LoginHandler implements Route{
         this.userDAO = userDao;
         this.authDAO = authDAO;
     }
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         Gson gson = new Gson();
         try {
             LoginRequest loginRequest = gson.fromJson(req.body(), LoginRequest.class);

@@ -14,14 +14,19 @@ import java.sql.Connection;
 
 public class Server {
 
-    public int run(int desiredPort) throws DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
         MemoryUserDAO userDAO = new MemoryUserDAO();
-        SqlAuthDao authDAO = new SqlAuthDao();
+        SqlAuthDao authDAO = null;
         MemoryGameDataDao gameDAO = new MemoryGameDataDao();
 
         Spark.staticFiles.location("web");
-        DatabaseManager.createDatabase();
+        try {
+            authDAO = new SqlAuthDao();
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e){
+            System.out.println("Error in auth or creating Database");
+        }
         // Register your endpoints and handle exceptions here.
 
         //This line initializes the server and can be removed once you have a functioning endpoint

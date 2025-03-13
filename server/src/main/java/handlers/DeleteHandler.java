@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.GameDataDAO;
@@ -22,7 +23,7 @@ public class DeleteHandler implements Route {
         this.gameDAO = gameDAO;
     }
 
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res){
 
         try {
             authDAO.clear();
@@ -32,8 +33,12 @@ public class DeleteHandler implements Route {
             res.status(200);
             res.type("application/json");
             return "{}";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "{Error in DB: " + e.getMessage() + " }";
         } catch (Exception e) {
-            throw new ResponseException(500, "Error: " + e.getMessage());
+            res.status(500);
+            return "{Error in internal server: " + e.getMessage() + " }";
         }
     }
 }

@@ -19,7 +19,7 @@ public class LogoutHandler implements Route {
         this.authDAO = authDAO;
     }
     @Override
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         String authToken = req.headers("Authorization");
         Gson gson = new Gson();
         try {

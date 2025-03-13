@@ -44,9 +44,9 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-
             conn.setCatalog(DATABASE_NAME);
             createTables(conn);
+            System.out.println("DB created, tables also created.");
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -74,10 +74,10 @@ public class DatabaseManager {
         }
     }
 
-    public static void createTables(Connection conn) throws DataAccessException{
-        String createAuthTable = "CREATE TABLE IF NOT EXISTS auth (token VARCHAR(225) PRIMARY KEY, username VARCHAR(225) NOT NULL)";
+    public static void createTables(Connection conn) throws DataAccessException {
+        String createAuthTable = "CREATE TABLE IF NOT EXISTS auth (authToken VARCHAR(225) PRIMARY KEY, username VARCHAR(225) NOT NULL)";
         String createUserTable = "CREATE TABLE IF NOT EXISTS users (username VARCHAR(100) PRIMARY KEY, password VARCHAR(225) NOT NULL, email VARCHAR(225))";
-        String createGameTable = "CREATE TABLE IF NOT EXISTS games (gameId INTEGER PRIMARY KEY, whiteUsername VARCHAR(225), blackUsername VARCHAR(225), gameName VARCHAR(225) NOT NULL, chessGame TEXT NOT NULL)";
+        String createGameTable = "CREATE TABLE IF NOT EXISTS games (gameID INTEGER PRIMARY KEY, whiteUsername VARCHAR(225), blackUsername VARCHAR(225), gameName VARCHAR(225) NOT NULL, game TEXT NOT NULL)";
 
         try (var authStmt = conn.prepareStatement(createAuthTable);
              var userStmt = conn.prepareStatement(createUserTable);

@@ -21,7 +21,7 @@ public class RegisterHandler implements Route{
     }
 
     @Override
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         Gson gson = new Gson();
         try {
             UserData userData = gson.fromJson(req.body(), UserData.class);

@@ -16,12 +16,13 @@ public class SqlAuthDao implements AuthDAO {
 
     @Override
     public void addAuth(AuthData auth) throws DataAccessException {
-        String stmt = "INSERT INTO auth (token, userId) VALUES (?, ?)";
+        String stmt = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.setString(1, auth.authToken());
             prepStmt.setString(2, auth.username());
             prepStmt.executeUpdate();
+            System.out.println("auth Added");
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -29,13 +30,14 @@ public class SqlAuthDao implements AuthDAO {
 
     @Override
     public AuthData findAuthByToken(String authToken) throws DataAccessException {
-        String stmt = "SELECT * FROM auth WHERE token = ?";
+        String stmt = "SELECT * FROM auth WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.setString(1, authToken);
             ResultSet results = prepStmt.executeQuery();
             if (results.next()) {
-                return new AuthData(authToken, results.getString("userId"));
+                System.out.println(results.getString("username"));
+                return new AuthData(results.getString("username"), authToken);
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -45,7 +47,7 @@ public class SqlAuthDao implements AuthDAO {
 
     @Override
     public void deleteAuthByToken(String authToken) throws DataAccessException {
-        String stmt = "DELETE FROM auth WHERE token = ?";
+        String stmt = "DELETE FROM auth WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.setString(1, authToken);
@@ -76,9 +78,9 @@ public class SqlAuthDao implements AuthDAO {
         String sql = "SELECT COUNT(*) FROM auth";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(sql);
-             ResultSet rs = prepStmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1) == 0;
+             ResultSet results = prepStmt.executeQuery()) {
+            if (results.next()) {
+                return results.getInt(1) == 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

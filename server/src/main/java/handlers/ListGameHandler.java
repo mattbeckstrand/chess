@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.GameDataDAO;
@@ -14,22 +15,24 @@ import spark.Route;
 import spark.Request;
 import spark.Response;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
-public class ListGameHandler implements Route{ ;
+public class ListGameHandler implements Route {
+    ;
     private final AuthDAO authDAO;
     private final GameDataDAO gameDAO;
 
-    public ListGameHandler(AuthDAO authDAO, GameDataDAO gameDAO){
+    public ListGameHandler(AuthDAO authDAO, GameDataDAO gameDAO) {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
 
     @Override
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         Gson gson = new Gson();
-        String authToken = req.headers("authorization");
         try {
+            String authToken = req.headers("authorization");
             ListGamesService service = new ListGamesService(authToken, authDAO, gameDAO);
             List<GameSummary> games = service.listGameData();
             ListGamesResponse response = new ListGamesResponse(games);

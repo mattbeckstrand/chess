@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDAO;
 import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.gamedata.GameDataDAO;
@@ -23,7 +24,7 @@ public class CreateGameHandler implements Route {
         this.authDao = authDao;
     }
 
-    public Object handle(Request req, Response res) throws ResponseException {
+    public Object handle(Request req, Response res) {
         Gson gson = new Gson();
         try {
             String authToken = req.headers("Authorization");
@@ -31,7 +32,6 @@ public class CreateGameHandler implements Route {
             CreateGameService service = new CreateGameService(gameDataDao, authToken, authDao, request.gameName());
             GameData game = service.addGameData();
             String jsonResponse = gson.toJson(new CreateGameResponse(game.getGameID()));
-            System.out.println("Response JSON: " + jsonResponse);
 
             res.status(200);
             res.type("application/json");
