@@ -15,18 +15,14 @@ import java.sql.SQLException;
 
 public class SqlUserDAO implements UserDAO{
     public void addUser(UserData user) throws DataAccessException{
-        String stmt = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        String stmt = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
-            System.out.println("Preparing to insert user: " + user.getUsername()); // NEW DEBUG
-            System.out.println("Hashed password: " + password);
             prepStmt.setString(1, user.getUsername());
             prepStmt.setString(2, password);
             prepStmt.setString(3, user.getEmail());
 
-            int rowsAffected = prepStmt.executeUpdate(); // Get affected rows
-            System.out.println("Rows affected: " + rowsAffected); // NEW DEBUG
+            int rowsAffected = prepStmt.executeUpdate();
             if (rowsAffected == 0) {
                 throw new DataAccessException("User insertion failed, no rows affected.");
             }

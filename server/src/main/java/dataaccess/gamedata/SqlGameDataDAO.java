@@ -90,7 +90,7 @@ public class SqlGameDataDAO implements GameDataDAO {
             prepStmt.setInt(2, gameId);
             int affectedRows = prepStmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new DataAccessException("Game not found or player already assigned.");
+                throw new DataAccessException("game not found or player already assigned.");
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
