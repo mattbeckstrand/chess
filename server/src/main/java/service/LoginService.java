@@ -7,6 +7,7 @@ import dataaccess.auth.MemoryAuthDAO;
 import dataaccess.user.UserDAO;
 import exception.ResponseException;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginService {
     private final UserDAO userDao;
@@ -35,7 +36,7 @@ public class LoginService {
         String storedPassword = this.userData.getPassword();
         String loginPassword = this.request.password();
 
-        if (!storedPassword.equals(loginPassword)) {
+        if (!BCrypt.checkpw(loginPassword, storedPassword)) {
             throw new ResponseException(401, "Error: Unauthorized incorrect password");
         }
     }

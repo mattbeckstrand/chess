@@ -4,17 +4,15 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
-import model.AuthData;
 import model.GameData;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class sqlGameDataDAO implements GameDataDAO {
+public class SqlGameDataDAO implements GameDataDAO {
     private int nextID = 1;
 
     public GameData createGame(String gameName) throws DataAccessException {
@@ -110,7 +108,7 @@ public class sqlGameDataDAO implements GameDataDAO {
 
 
     public void clear() throws DataAccessException {
-        String stmt = "DELETE * FROM games";
+        String stmt = "DELETE FROM games";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.executeUpdate();
@@ -120,7 +118,7 @@ public class sqlGameDataDAO implements GameDataDAO {
     }
 
     public boolean isEmpty() throws DataAccessException {
-        String stmt = "SELECT * FROM games";
+        String stmt = "SELECT COUNT(*) FROM games";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt);
              ResultSet results = prepStmt.executeQuery()) {

@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.DataAccessException;
 import dataaccess.gamedata.MemoryGameDataDao;
+import dataaccess.gamedata.SqlGameDataDAO;
 import exception.ResponseException;
 import spark.*;
 import handlers.*;
@@ -16,9 +17,9 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-        MemoryUserDAO userDAO = new MemoryUserDAO();
+        SqlUserDAO userDAO = new SqlUserDAO();
         SqlAuthDao authDAO = null;
-        MemoryGameDataDao gameDAO = new MemoryGameDataDao();
+        SqlGameDataDAO gameDAO = new SqlGameDataDAO();
 
         Spark.staticFiles.location("web");
         try {
