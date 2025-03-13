@@ -1,6 +1,7 @@
 package dataaccess.gamedata;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -75,24 +76,14 @@ public class SqlGameDataDAO implements GameDataDAO {
         }
         return games;
     }
-
-    public void addWhitePlayer(int gameId, String username) throws DataAccessException {
-        String stmt = "UPDATE games SET whiteUsername = ? WHERE gameID = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
-            prepStmt.setString(1, username);
-            prepStmt.setInt(2, gameId);
-            int affectedRows = prepStmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DataAccessException("Game not found or player already assigned.");
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+    @Override
+    public void addPlayer(int gameId, String username, String tColor) throws DataAccessException {
+        String stmt;
+        if (tColor.equals("BLACK")) {
+            stmt = "UPDATE games SET blackUsername = ? WHERE gameID = ?";
+        } else {
+            stmt = "UPDATE games SET whiteUsername = ? WHERE gameID = ?";
         }
-    }
-
-    public void addBlackPlayer(int gameId, String username) throws DataAccessException {
-        String stmt = "UPDATE games SET blackUsername = ? WHERE gameID = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.setString(1, username);

@@ -1,6 +1,7 @@
 package dataaccess.gamedata;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import model.GameData;
 import java.util.HashMap;
 
@@ -25,19 +26,16 @@ public class MemoryGameDataDao implements GameDataDAO{
     }
 
     @Override
-    public void addWhitePlayer(int gameID, String username){
+    public void addPlayer(int gameID, String username, String tColor){
         GameData game = gameDataList.get(gameID);
         if (game != null){
+            if (tColor.equals("WHITE")){
+                game.setWhiteUsername(username);
+            } else {
+                game.setBlackUsername(username);
+            }
         game.setWhiteUsername(username);
         gameDataList.put(gameID, game);
-        }
-    }
-    @Override
-    public void addBlackPlayer(int gameID, String username){
-        GameData game = gameDataList.get(gameID);
-        if (game != null){
-            game.setBlackUsername(username);
-            gameDataList.put(gameID, game);
         }
     }
 

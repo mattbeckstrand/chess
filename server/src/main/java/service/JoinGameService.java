@@ -55,9 +55,9 @@ public class JoinGameService {
             }
 
             if (playerColor.equals("WHITE")) {
-                gameDataDao.addWhitePlayer(gameId, username);
+                gameDataDao.addPlayer(gameId, username, "WHITE");
             } else {
-                gameDataDao.addBlackPlayer(gameId, username);
+                gameDataDao.addPlayer(gameId, username, "BLACK");
             }
 
             return gameDataDao.getGame(gameId);

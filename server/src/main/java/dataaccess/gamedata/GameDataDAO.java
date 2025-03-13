@@ -1,5 +1,6 @@
 package dataaccess.gamedata;
 
+import chess.ChessPiece;
 import model.GameData;
 import dataaccess.DataAccessException;
 
@@ -12,9 +13,7 @@ public interface GameDataDAO {
 
     HashMap<Integer, GameData> listGames() throws DataAccessException;
 
-    void addWhitePlayer(int gameId, String username) throws DataAccessException;
-
-    void addBlackPlayer(int gameId, String username) throws  DataAccessException;
+    void addPlayer(int gameId, String username, String tColor) throws DataAccessException;
 
     void clear() throws DataAccessException;
 
