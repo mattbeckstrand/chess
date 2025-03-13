@@ -15,7 +15,8 @@ import java.sql.SQLException;
 
 public class SqlUserDAO implements UserDAO{
     public void addUser(UserData user) throws DataAccessException{
-        String stmt = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        String stmt = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
             prepStmt.setString(1, user.getUsername());

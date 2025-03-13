@@ -71,22 +71,14 @@ public class UserDaoTests {
         userDao.clear();
         UserData testUser = new UserData("testKing", "kingoftests12", "test@example.com");
         userDao.addUser(testUser);
-        String stmt = "SELECT COUNT(*) FROM users WHERE username = ?";
-        int userCount = 0;
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
-            prepStmt.setString(1, testUser.getUsername());
-            ResultSet results = prepStmt.executeQuery();
-            if (results.next()) {
-                userCount = results.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
+        UserData retrievedUser = userDao.findUser(testUser.getUsername());
 
-        assertEquals(1, userCount, "User should have been added exactly once.");
+        assertNotNull(retrievedUser, "user should be found");
+        assertEquals(testUser.getUsername(), retrievedUser.getUsername(), "usernames should match");
+        assertEquals(testUser.getEmail(), retrievedUser.getEmail(), "emails should match");
     }
+
 
 
     @Test
