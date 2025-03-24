@@ -3,6 +3,7 @@ package client;
 
 import java.util.Scanner;
 
+import static java.awt.Color.GREEN;
 import static ui.EscapeSequences.*;
 
 public class Repl{
@@ -47,7 +48,7 @@ public class Repl{
 
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
+        System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + GREEN);
     }
 
 }

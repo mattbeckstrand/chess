@@ -57,7 +57,7 @@ public class UnloggedInClient implements Clients{
         UserData userData = new UserData(username, password, email);
         AuthData authData = server.Register(userData);
         String authToken = authData.authToken();
-        repl.setClient(new LoggedInClient(serverUrl, repl));
+        repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
         return "Successfully registered user: " + username;
     }
 
@@ -69,7 +69,7 @@ public class UnloggedInClient implements Clients{
         String password = params[1];
         LoginRequest loginRequest = new LoginRequest(username, password);
         String authToken = server.Login(loginRequest);
-        repl.setClient(new LoggedInClient(serverUrl, repl));
+        repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
         return "Successfully logged in user: " + username;
     }
     @Override

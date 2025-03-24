@@ -1,10 +1,7 @@
 package client;
 
 import exception.ResponseException;
-import model.AuthData;
-import model.CreateGameRequest;
-import model.LoginRequest;
-import model.UserData;
+import model.*;
 import server.ServerFacade;
 
 import java.util.Arrays;
@@ -12,6 +9,7 @@ import exception.ResponseException;
 import server.ServerFacade;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class LoggedInClient implements Clients{
     private final ServerFacade server;
@@ -39,7 +37,9 @@ public class LoggedInClient implements Clients{
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(params);
-                case "login" -> login(params);
+                case "logout" -> logout();
+                case "list" -> list();
+                case "play" -> playGame(params);
                 case "quit" -> "quit";
                 default -> help();
 
@@ -59,17 +59,46 @@ public class LoggedInClient implements Clients{
         return "Successfully created game: " + gameID;
     }
 
-    public String login(String... params) throws ResponseException{
-        if (params.length != 3) {
-            return "Usage: register <username> <password> <email>";
-        }
-        String username = params[0];
-        String password = params[1];
-        LoginRequest loginRequest = new LoginRequest(username, password);
-        String authToken = server.Login(loginRequest);
-        this.state = State.SIGNEDIN;
-        return "Successfully logged in user: " + username;
+    public String logout() throws ResponseException{
+        server.Logout(this.authToken);
+        repl.setClient(new UnloggedInClient(serverUrl, repl));
+        return "Successfully logged out ";
     }
+
+    public String list() throws ResponseException {
+        ListGamesResponse response = server.ListGames(authToken);
+        StringBuilder result = new StringBuilder();
+        List<GameSummary> games = response.games();
+
+        int count = 1;
+        for (GameSummary game : games) {
+            result.append(count++).append(". ");
+            result.append("Game Name: ").append(game.gameName()).append("\n");
+            result.append("Players:\n");
+            if (game.whiteUsername() != null) {
+                result.append("  White: ").append(game.whiteUsername()).append("\n");
+            }
+            if (game.blackUsername() != null) {
+                result.append("  Black: ").append(game.blackUsername()).append("\n");
+            }
+            result.append("\n");
+        }
+
+        return result.toString();
+    }
+
+    public String playGame(String... params) throws ResponseException{
+        if (params.length != 2) {
+            return "Usage: join <ID> [WHITE|BLACK]";
+        }
+        String stringGameID = params[0];
+        int gameId = Integer.parseInt(stringGameID);
+        String playerColor = params[1];
+        JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
+        server.JoinGame(authToken, request);
+        return "Successfully joined game";
+    }
+
 
     public String help() {
         return """
