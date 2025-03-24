@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
+import model.CreateGameResponse;
 import model.LoginRequest;
 import model.UserData;
 
@@ -35,7 +36,8 @@ public class ServerFacade {
 
     public Integer CreateGame(String gameName) throws ResponseException{
         var path = "/game";
-        response
+        CreateGameResponse response =  this.makeRequest("POST", path, gameName, CreateGameResponse.class);
+        return response.gameID();
     }
 
 
