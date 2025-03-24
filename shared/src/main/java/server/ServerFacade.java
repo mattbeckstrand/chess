@@ -2,14 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
-import model.AuthData;
-import model.CreateGameResponse;
-import model.LoginRequest;
-import model.UserData;
+import model.*;
 
 
 import java.io.*;
 import java.net.*;
+import java.util.List;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -31,13 +29,23 @@ public class ServerFacade {
 
     public void Logout(String authToken) throws ResponseException{
         var path = "/session";
-        this.makeRequestWithAuth("DELETE", path, authToken);
+        this.makeRequestWithAuth("DELETE", path, authToken, null, null);
     }
 
-    public Integer CreateGame(String gameName) throws ResponseException{
+    public Integer CreateGame(CreateGameRequest request, String authToken) throws ResponseException{
         var path = "/game";
-        CreateGameResponse response =  this.makeRequest("POST", path, gameName, CreateGameResponse.class);
+        CreateGameResponse response =  this.makeRequestWithAuth("POST", path, authToken, request, CreateGameResponse.class);
         return response.gameID();
+    }
+
+    public void JoinGame(String authToken, JoinGameRequest request) throws ResponseException{
+        var path = "game";
+        this.makeRequestWithAuth("PUT", path, authToken, request, null);
+    }
+
+    public ListGamesResponse ListGames(String authToken) throws ResponseException{
+        var path = "/game";
+        return this.makeRequestWithAuth("GET", path, authToken, null, ListGamesResponse.class);
     }
 
 
@@ -59,14 +67,25 @@ public class ServerFacade {
         }
     }
 
-    private void makeRequestWithAuth(String method, String path, String authToken) throws ResponseException{
+    private <T> T makeRequestWithAuth(String method, String path, String authToken, Object request, Class<T> responseClass) throws ResponseException{
         try{
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setRequestProperty("Authorization", authToken);
+
+            if (request != null) {
+                http.setDoOutput(true);
+                writeBody(request, http);
+            }
             http.connect();
             throwIfNotSuccessful(http);
+
+            if (responseClass != null) {
+                return readBody(http, responseClass);
+            } else {
+                return null;
+            }
         } catch (ResponseException ex) {
             throw ex;
         } catch (Exception ex) {
