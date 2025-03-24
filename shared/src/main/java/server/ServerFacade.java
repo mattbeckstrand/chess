@@ -48,6 +48,11 @@ public class ServerFacade {
         return this.makeRequestWithAuth("GET", path, authToken, null, ListGamesResponse.class);
     }
 
+    public void Delete() throws ResponseException{
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
