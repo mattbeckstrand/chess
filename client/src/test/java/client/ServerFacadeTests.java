@@ -110,12 +110,14 @@ public class ServerFacadeTests {
 
     @Test
     public void joinGameTests() throws ResponseException{
-        AuthData authData = registerTestUser();
-        int gameId = createGame(authData);
-        System.out.println(gameId);
-        JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
-        serverFacade.joinGame(authData.authToken(), request);
+        assertDoesNotThrow(() -> {
+            AuthData authData = registerTestUser();
+            int gameId = createGame(authData);
+            JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
+            serverFacade.joinGame(authData.authToken(), request);
+        });
     }
+
 
     @Test
     public void failJoinGameTests() throws ResponseException{
@@ -130,8 +132,28 @@ public class ServerFacadeTests {
 
     @Test
     public void listGamesTest() throws ResponseException{
-
+        AuthData authData = registerTestUser();
+        createGame(authData);
+        createGame(authData);
+        createGame(authData);
+        ListGamesResponse response = serverFacade.listGames(authData.authToken());
+        assertNotNull(response);
     }
 
+    @Test
+    public void failListGamesTest() throws ResponseException{
+        AuthData authData = registerTestUser();
+        ListGamesResponse response = serverFacade.listGames(authData.authToken());
+        assertTrue(response.games().isEmpty());
+    }
+    @Test
+    public void deleteTest() throws ResponseException{
+        AuthData authData = registerTestUser();
+        serverFacade.delete();
+        LoginRequest request = new LoginRequest(authData.username(), authData.authToken());
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.login(request));
+        assertNotNull(exception);
+
+    }
 }
 
