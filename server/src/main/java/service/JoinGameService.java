@@ -35,6 +35,7 @@ public class JoinGameService {
     }
 
     public GameData joinGame() throws ResponseException, DataAccessException {
+        System.out.println(playerColor);
         if (playerColor == null || (!playerColor.equals("WHITE") && !playerColor.equals("BLACK"))) {
             throw new ResponseException(400, "Error: Invalid player color");
         }

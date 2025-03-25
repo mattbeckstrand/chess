@@ -38,8 +38,9 @@ public class ServerFacade {
         return response.gameID();
     }
 
+
     public void JoinGame(String authToken, JoinGameRequest request) throws ResponseException{
-        var path = "game";
+        var path = "/game";
         this.makeRequestWithAuth("PUT", path, authToken, request, null);
     }
 
@@ -60,9 +61,10 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            System.out.println("Got into the make request part");
             writeBody(request, http);
             http.connect();
+            System.out.println("Response code: " + http.getResponseCode());
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
@@ -121,17 +123,15 @@ public class ServerFacade {
         }
     }
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0) {
+        if (responseClass == null) return null;
+
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
-                }
+                T response = new Gson().fromJson(reader, responseClass);
+                System.out.println(response);
+                return response;
             }
         }
-        return response;
-    }
 
 
     private boolean isSuccessful(int status) {

@@ -34,7 +34,7 @@ public class RegisterHandler implements Route{
             return gson.toJson(authData);
         } catch (ResponseException e) {
             res.status(e.statusCode());
-            return gson.toJson(new ErrorResponse("error: " + e.getMessage()));
+            return gson.toJson(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             res.status(500);
             return gson.toJson(new ErrorResponse("internal server error"));

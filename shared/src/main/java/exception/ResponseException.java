@@ -1,6 +1,7 @@
 package exception;
 
 import com.google.gson.Gson;
+import model.ErrorResponse;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,10 +21,9 @@ public class ResponseException extends Exception {
     }
 
     public static ResponseException fromJson(InputStream stream) {
-        var map = new Gson().fromJson(new InputStreamReader(stream), HashMap.class);
-        var status = ((Double) map.get("status")).intValue();
-        String message = map.get("message").toString();
-        return new ResponseException(status, message);
+        InputStreamReader reader = new InputStreamReader(stream);
+        ErrorResponse error = new Gson().fromJson(reader, ErrorResponse.class);
+        return new ResponseException(403, error.message());
     }
 
     public int statusCode() {

@@ -79,8 +79,12 @@ public class DatabaseManager {
                 "username VARCHAR(225) NOT NULL)";
         String createUserTable = "CREATE TABLE IF NOT EXISTS users" +
                 "(username VARCHAR(100) PRIMARY KEY, password VARCHAR(225) NOT NULL, email VARCHAR(225))";
-        String createGameTable = "CREATE TABLE IF NOT EXISTS games (gameID INTEGER PRIMARY KEY, " +
-                "whiteUsername VARCHAR(225), blackUsername VARCHAR(225), gameName VARCHAR(225) NOT NULL, game TEXT NOT NULL)";
+        String createGameTable = "CREATE TABLE IF NOT EXISTS games (" +
+                "gameID INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
+                "whiteUsername VARCHAR(225), " +
+                "blackUsername VARCHAR(225), " +
+                "gameName VARCHAR(225) NOT NULL, " +
+                "game TEXT NOT NULL)";
 
         try (var authStmt = conn.prepareStatement(createAuthTable);
              var userStmt = conn.prepareStatement(createUserTable);

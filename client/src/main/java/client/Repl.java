@@ -34,7 +34,7 @@ public class Repl{
                 result = client.eval(line);
                 System.out.print(result);
 
-                if (result.contains("Successfully logged in") || result.contains("Successfully logged out")){
+                if (result.contains("Successfully logged in\n") || result.contains("Successfully logged out\n")){
                     System.out.println(client.help());
                 }
             } catch (Throwable e) {
@@ -48,7 +48,8 @@ public class Repl{
 
 
     private void printPrompt() {
-        System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + GREEN);
+        String status = client.isLoggedIn() ? SET_TEXT_COLOR_BLUE + "[LOGGED_IN]" : SET_TEXT_COLOR_MAGENTA + "[LOGGED_OUT]";
+        System.out.print("\n" + RESET_TEXT_COLOR + status + RESET_TEXT_COLOR + " >>> " + SET_TEXT_COLOR_GREEN);
     }
 
 }

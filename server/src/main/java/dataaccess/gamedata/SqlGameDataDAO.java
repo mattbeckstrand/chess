@@ -14,25 +14,30 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class SqlGameDataDAO implements GameDataDAO {
-    private int nextID = 1;
-
     public GameData createGame(String gameName) throws DataAccessException {
-        String stmt = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+        String stmt = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         ChessGame game = new ChessGame();
         Gson gson = new Gson();
         String jsonGame = gson.toJson(game);
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
-            prepStmt.setInt(1, nextID);
+             PreparedStatement prepStmt = conn.prepareStatement(stmt, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            prepStmt.setString(1, null);
             prepStmt.setString(2, null);
-            prepStmt.setString(3, null);
-            prepStmt.setString(4, gameName);
-            prepStmt.setString(5, jsonGame);
+            prepStmt.setString(3, gameName);
+            prepStmt.setString(4, jsonGame);
             prepStmt.executeUpdate();
-            System.out.println("game Added");
-            GameData data = new GameData(nextID, null, null, gameName, game);
-            nextID += 1;
-            return data;
+
+            try (ResultSet generatedKeys = prepStmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int gameID = generatedKeys.getInt(1);
+                    System.out.println("Game added with ID: " + gameID);
+                    return new GameData(gameID, null, null, gameName, game);
+                } else {
+                    throw new DataAccessException("Failed to retrieve game ID.");
+                }
+            }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }

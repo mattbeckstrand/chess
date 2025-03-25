@@ -7,14 +7,11 @@ import model.UserData;
 import server.ServerFacade;
 
 import java.util.Arrays;
-import exception.ResponseException;
-import server.ServerFacade;
 
-import java.util.Arrays;
+import static ui.EscapeSequences.*;
 
 public class UnloggedInClient implements Clients{
     private final ServerFacade server;
-    private State state = State.SIGNEDOUT;
     private final String serverUrl;
     private final Repl repl;
 
@@ -55,15 +52,19 @@ public class UnloggedInClient implements Clients{
         String password = params[1];
         String email = params[2];
         UserData userData = new UserData(username, password, email);
-        AuthData authData = server.Register(userData);
-        String authToken = authData.authToken();
-        repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
-        return "Successfully registered user: " + username;
+        try {
+            AuthData authData = server.Register(userData);
+            String authToken = authData.authToken();
+            repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
+            return "Successfully registered user: " + username;
+        } catch (ResponseException e) {
+            return "Registration failed: " + e.getMessage();
+        }
     }
 
     public String login(String... params) throws ResponseException{
-        if (params.length != 3) {
-            return "Usage: register <username> <password> <email>";
+        if (params.length != 2) {
+            return "Usage: login <username> <password>";
         }
         String username = params[0];
         String password = params[1];
@@ -74,12 +75,11 @@ public class UnloggedInClient implements Clients{
     }
     @Override
     public String help() {
-        return """
-                register <USERNAME> <PASSWORD> <EMAIL>
-                login <USERNAME> <PASSWORD>
-                quit - playing chess
-                help - with possible commands
-                """;
+        return SET_TEXT_COLOR_BLUE + """
+                register <USERNAME> <PASSWORD> <EMAIL>""" +  RESET_TEXT_COLOR + " - to create an account \n" +
+                SET_TEXT_COLOR_BLUE + "login <USERNAME> <PASSWORD>" + RESET_TEXT_COLOR + " - to play chess \n" +
+                SET_TEXT_COLOR_BLUE + "quit" + RESET_TEXT_COLOR + " - playing chess\n"+
+                SET_TEXT_COLOR_BLUE + "help" + RESET_TEXT_COLOR + " - with possible commands";
     }
 
 }

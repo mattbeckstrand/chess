@@ -3,17 +3,14 @@ package client;
 import exception.ResponseException;
 import model.*;
 import server.ServerFacade;
-
-import java.util.Arrays;
-import exception.ResponseException;
-import server.ServerFacade;
-
+import ui.DrawingChessBoard;
 import java.util.Arrays;
 import java.util.List;
 
+import static ui.EscapeSequences.*;
+
 public class LoggedInClient implements Clients{
     private final ServerFacade server;
-    private State state = State.SIGNEDOUT;
     private final String serverUrl;
     private final Repl repl;
     private final String authToken;
@@ -32,7 +29,7 @@ public class LoggedInClient implements Clients{
 
     public String eval(String input) {
         try {
-            var tokens = input.toLowerCase().split(" ");
+            var tokens = input.split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
@@ -41,6 +38,7 @@ public class LoggedInClient implements Clients{
                 case "list" -> list();
                 case "play" -> playGame(params);
                 case "quit" -> "quit";
+                case "observe" -> observe(params);
                 default -> help();
 
             };
@@ -96,19 +94,29 @@ public class LoggedInClient implements Clients{
         String playerColor = params[1];
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
         server.JoinGame(authToken, request);
+        DrawingChessBoard.drawChessBoard(System.out);
         return "Successfully joined game";
+    }
+
+    public String observe(String ... params) throws ResponseException{
+        if (params.length != 1) {
+            return "Usage: observe <ID>";
+        }
+        String stringGameId = params[0];
+        int gameId = Integer.parseInt(stringGameId);
+
+        DrawingChessBoard.drawChessBoard(System.out);
+        return "Game observed";
     }
 
 
     public String help() {
-        return """
-                create <NAME> - a game
-                list - games
-                join <ID> [WHITE|BLACK] - a game
-                observe <ID> - a game
-                logout - when you are done
-                help - with possible commands
-                """;
+        return SET_TEXT_COLOR_MAGENTA + """
+                create <NAME>""" + RESET_TEXT_COLOR + " - a game\n" +
+                SET_TEXT_COLOR_MAGENTA + "list" + RESET_TEXT_COLOR+ " - games\n"+
+                SET_TEXT_COLOR_MAGENTA + "play <ID> [WHITE|BLACK]" + RESET_TEXT_COLOR+ " - a game\n" +
+                SET_TEXT_COLOR_MAGENTA + "observe <ID>" + RESET_TEXT_COLOR + " - a game\n" +
+                SET_TEXT_COLOR_MAGENTA + "logout" + RESET_TEXT_COLOR + " - when you are done\n" +
+                SET_TEXT_COLOR_MAGENTA + "help" +  RESET_TEXT_COLOR + " - with possible commands";
     }
-
 }
