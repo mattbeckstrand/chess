@@ -48,7 +48,7 @@ public class ServerFacade {
         return this.makeRequestWithAuth("GET", path, authToken, null, ListGamesResponse.class);
     }
 
-    public void Delete() throws ResponseException{
+    public void delete() throws ResponseException{
         var path = "/db";
         this.makeRequest("DELETE", path, null, null);
     }

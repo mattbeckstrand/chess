@@ -20,7 +20,7 @@ public class ServerFacadeTests {
         var port = server.run(8000);
         System.out.println("Started test HTTP server on " + port);
         serverFacade = new ServerFacade("http://localhost:8000");
-        serverFacade.Delete();
+        serverFacade.delete();
     }
 
     @AfterAll
