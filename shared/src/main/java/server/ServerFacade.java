@@ -7,7 +7,6 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.List;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -16,35 +15,35 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public AuthData Register(UserData userData) throws ResponseException{
+    public AuthData register(UserData userData) throws ResponseException{
         var path = "/user";
         return this.makeRequest("POST", path, userData, AuthData.class);
     }
 
-    public String Login(LoginRequest loginRequest) throws ResponseException{
+    public String login(LoginRequest loginRequest) throws ResponseException{
         var path = "/session";
         var response = this.makeRequest("POST", path, loginRequest, AuthData.class);
         return response.authToken();
     }
 
-    public void Logout(String authToken) throws ResponseException{
+    public void logout(String authToken) throws ResponseException{
         var path = "/session";
         this.makeRequestWithAuth("DELETE", path, authToken, null, null);
     }
 
-    public Integer CreateGame(CreateGameRequest request, String authToken) throws ResponseException{
+    public Integer createGame(CreateGameRequest request, String authToken) throws ResponseException{
         var path = "/game";
         CreateGameResponse response =  this.makeRequestWithAuth("POST", path, authToken, request, CreateGameResponse.class);
         return response.gameID();
     }
 
 
-    public void JoinGame(String authToken, JoinGameRequest request) throws ResponseException{
+    public void joinGame(String authToken, JoinGameRequest request) throws ResponseException{
         var path = "/game";
         this.makeRequestWithAuth("PUT", path, authToken, request, null);
     }
 
-    public ListGamesResponse ListGames(String authToken) throws ResponseException{
+    public ListGamesResponse listGames(String authToken) throws ResponseException{
         var path = "/game";
         return this.makeRequestWithAuth("GET", path, authToken, null, ListGamesResponse.class);
     }
@@ -123,8 +122,9 @@ public class ServerFacade {
         }
     }
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        if (responseClass == null) return null;
-
+        if (responseClass == null){
+            return null;
+        }
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 T response = new Gson().fromJson(reader, responseClass);

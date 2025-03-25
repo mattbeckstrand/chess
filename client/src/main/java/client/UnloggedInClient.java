@@ -53,7 +53,7 @@ public class UnloggedInClient implements Clients{
         String email = params[2];
         UserData userData = new UserData(username, password, email);
         try {
-            AuthData authData = server.Register(userData);
+            AuthData authData = server.register(userData);
             String authToken = authData.authToken();
             repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
             return "Successfully registered user: " + username;
@@ -69,7 +69,7 @@ public class UnloggedInClient implements Clients{
         String username = params[0];
         String password = params[1];
         LoginRequest loginRequest = new LoginRequest(username, password);
-        String authToken = server.Login(loginRequest);
+        String authToken = server.login(loginRequest);
         repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
         return "Successfully logged in user: " + username;
     }

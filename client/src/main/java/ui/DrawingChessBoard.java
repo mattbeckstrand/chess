@@ -29,9 +29,12 @@ public class DrawingChessBoard {
                 int boardRow = isWhitePerspective ? r : 9 - r;
                 int boardCol = isWhitePerspective ? c : 9 - c;
 
-                if (boardRow == 2) board[r][c] = WHITE_PAWN;
-                if (boardRow == 7) board[r][c] = BLACK_PAWN;
-
+                if (boardRow == 2) {
+                    board[r][c] = WHITE_PAWN;
+                }
+                if (boardRow == 7) {
+                    board[r][c] = BLACK_PAWN;
+                }
                 if (boardRow == 1) {
                         if(boardCol == 1 || boardCol == 8) {
                              board[r][c] = WHITE_ROOK;

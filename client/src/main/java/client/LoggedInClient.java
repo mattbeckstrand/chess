@@ -53,18 +53,18 @@ public class LoggedInClient implements Clients{
         }
         String gameName = params[0];
         CreateGameRequest request = new CreateGameRequest(gameName);
-        Integer gameID = server.CreateGame(request, authToken);
+        Integer gameID = server.createGame(request, authToken);
         return "Successfully created game: " + gameID;
     }
 
     public String logout() throws ResponseException{
-        server.Logout(this.authToken);
+        server.logout(this.authToken);
         repl.setClient(new UnloggedInClient(serverUrl, repl));
         return "Successfully logged out ";
     }
 
     public String list() throws ResponseException {
-        ListGamesResponse response = server.ListGames(authToken);
+        ListGamesResponse response = server.listGames(authToken);
         StringBuilder result = new StringBuilder();
         List<GameSummary> games = response.games();
 
@@ -93,7 +93,7 @@ public class LoggedInClient implements Clients{
         int gameId = Integer.parseInt(stringGameID);
         String playerColor = params[1];
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
-        server.JoinGame(authToken, request);
+        server.joinGame(authToken, request);
         DrawingChessBoard.drawChessBoard(System.out, playerColor);
         return "Successfully joined game";
     }

@@ -30,7 +30,7 @@ public class ServerFacadeTests {
 
     public AuthData registerTestUser() throws ResponseException{
         UserData userData = new UserData("test", "test", "test");
-        return serverFacade.Register(userData);
+        return serverFacade.register(userData);
     }
 
 
@@ -50,8 +50,8 @@ public class ServerFacadeTests {
     public void registerTestFailed() throws ResponseException {
         String uniqueUsername = "test" + System.currentTimeMillis(); // Ensures uniqueness
         UserData userData = new UserData(uniqueUsername, "test", "test");
-        serverFacade.Register(userData);
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.Register(userData));
+        serverFacade.register(userData);
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.register(userData));
         assertTrue(exception.getMessage().contains("already taken"), "Exception should indicate a duplicate registration.");
 
     }
@@ -59,7 +59,7 @@ public class ServerFacadeTests {
     public void loginTest() throws ResponseException{
         registerTestUser();
         LoginRequest loginRequest = new LoginRequest("test", "test");
-        String authToken = serverFacade.Login(loginRequest);
+        String authToken = serverFacade.login(loginRequest);
         Assertions.assertNotNull(authToken);
     }
 
@@ -67,29 +67,29 @@ public class ServerFacadeTests {
     public void failedLoginTest() throws ResponseException{
         registerTestUser();
         LoginRequest loginRequest = new LoginRequest("test", "test1");
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.Login(loginRequest));
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.login(loginRequest));
         assertTrue(exception != null);
     }
 
     @Test
     public void logoutTest() throws ResponseException{
         AuthData authData = registerTestUser();
-        serverFacade.Logout(authData.authToken());
+        serverFacade.logout(authData.authToken());
         CreateGameRequest request = new CreateGameRequest("gameName");
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.CreateGame(request, authData.authToken()));
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.createGame(request, authData.authToken()));
         assertNotNull(exception);
     }
     @Test
     public void failedLogoutTest() throws ResponseException{
         AuthData authData = registerTestUser();
-        serverFacade.Logout(authData.authToken());
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.Logout(authData.authToken()));
+        serverFacade.logout(authData.authToken());
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.logout(authData.authToken()));
         assertNotNull(exception);
     }
 
     public int createGame(AuthData authData) throws ResponseException{
         CreateGameRequest request = new CreateGameRequest("gameName");
-        int gameId = serverFacade.CreateGame(request, authData.authToken());
+        int gameId = serverFacade.createGame(request, authData.authToken());
         return gameId;
     }
     @Test
@@ -102,30 +102,35 @@ public class ServerFacadeTests {
     @Test
     public void createGameTestFailed() throws ResponseException{
         AuthData authData = registerTestUser();
-        serverFacade.Logout(authData.authToken());
+        serverFacade.logout(authData.authToken());
         CreateGameRequest request = new CreateGameRequest("gameName");
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.CreateGame(request, authData.authToken()));
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.createGame(request, authData.authToken()));
         assertNotNull(exception);
     }
 
     @Test
-    public void joinGame() throws ResponseException{
+    public void joinGameTests() throws ResponseException{
         AuthData authData = registerTestUser();
         int gameId = createGame(authData);
         System.out.println(gameId);
         JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
-        serverFacade.JoinGame(authData.authToken(), request);
+        serverFacade.joinGame(authData.authToken(), request);
     }
 
     @Test
-    public void failJoinGame() throws ResponseException{
+    public void failJoinGameTests() throws ResponseException{
         AuthData authData = registerTestUser();
         int gameId = createGame(authData);
         System.out.println(gameId);
         JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
-        serverFacade.JoinGame(authData.authToken(), request);
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.JoinGame(authData.authToken(), request));
+        serverFacade.joinGame(authData.authToken(), request);
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.joinGame(authData.authToken(), request));
         assertNotNull(exception);
+    }
+
+    @Test
+    public void listGamesTest() throws ResponseException{
+
     }
 
 }
