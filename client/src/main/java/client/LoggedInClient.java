@@ -94,7 +94,7 @@ public class LoggedInClient implements Clients{
         String playerColor = params[1];
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
         server.JoinGame(authToken, request);
-        DrawingChessBoard.drawChessBoard(System.out);
+        DrawingChessBoard.drawChessBoard(System.out, playerColor);
         return "Successfully joined game";
     }
 
@@ -105,7 +105,7 @@ public class LoggedInClient implements Clients{
         String stringGameId = params[0];
         int gameId = Integer.parseInt(stringGameId);
 
-        DrawingChessBoard.drawChessBoard(System.out);
+        DrawingChessBoard.drawChessBoard(System.out, "WHITE");
         return "Game observed";
     }
 

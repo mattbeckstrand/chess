@@ -115,7 +115,17 @@ public class ServerFacadeTests {
         System.out.println(gameId);
         JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
         serverFacade.JoinGame(authData.authToken(), request);
-        assertTrue("true" == "true", "true");
+    }
+
+    @Test
+    public void failJoinGame() throws ResponseException{
+        AuthData authData = registerTestUser();
+        int gameId = createGame(authData);
+        System.out.println(gameId);
+        JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
+        serverFacade.JoinGame(authData.authToken(), request);
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.JoinGame(authData.authToken(), request));
+        assertNotNull(exception);
     }
 
 }
