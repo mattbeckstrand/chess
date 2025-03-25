@@ -74,9 +74,11 @@ public class ServerFacadeTests {
     @Test
     public void logoutTest() throws ResponseException{
         AuthData authData = registerTestUser();
-        serverFacade.logout(authData.authToken());
         CreateGameRequest request = new CreateGameRequest("gameName");
-        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.createGame(request, authData.authToken()));
+        int gameId = serverFacade.createGame(request, authData.authToken());
+        serverFacade.logout(authData.authToken());
+        JoinGameRequest requestGame = new JoinGameRequest("WHITE", gameId);
+        ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.joinGame(authData.authToken(), requestGame));
         assertNotNull(exception);
     }
     @Test
