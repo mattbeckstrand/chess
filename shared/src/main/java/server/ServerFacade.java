@@ -60,10 +60,8 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-            System.out.println("Got into the make request part");
             writeBody(request, http);
             http.connect();
-            System.out.println("Response code: " + http.getResponseCode());
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
@@ -128,7 +126,6 @@ public class ServerFacade {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 T response = new Gson().fromJson(reader, responseClass);
-                System.out.println(response);
                 return response;
             }
         }

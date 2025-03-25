@@ -41,6 +41,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerTest() throws ResponseException {
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         String username = authData.username();
         Assertions.assertEquals("test", username);
@@ -48,6 +49,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerTestFailed() throws ResponseException {
+        serverFacade.delete();
         String uniqueUsername = "test" + System.currentTimeMillis(); // Ensures uniqueness
         UserData userData = new UserData(uniqueUsername, "test", "test");
         serverFacade.register(userData);
@@ -57,6 +59,7 @@ public class ServerFacadeTests {
     }
     @Test
     public void loginTest() throws ResponseException{
+        serverFacade.delete();
         registerTestUser();
         LoginRequest loginRequest = new LoginRequest("test", "test");
         String authToken = serverFacade.login(loginRequest);
@@ -65,6 +68,7 @@ public class ServerFacadeTests {
 
     @Test
     public void failedLoginTest() throws ResponseException{
+        serverFacade.delete();
         registerTestUser();
         LoginRequest loginRequest = new LoginRequest("test", "test1");
         ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.login(loginRequest));
@@ -73,6 +77,7 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         CreateGameRequest request = new CreateGameRequest("gameName");
         int gameId = serverFacade.createGame(request, authData.authToken());
@@ -83,6 +88,7 @@ public class ServerFacadeTests {
     }
     @Test
     public void failedLogoutTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         serverFacade.logout(authData.authToken());
         ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.logout(authData.authToken()));
@@ -96,6 +102,7 @@ public class ServerFacadeTests {
     }
     @Test
     public void createGameTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         int gameId = createGame(authData);
         assertNotNull(gameId);
@@ -103,6 +110,7 @@ public class ServerFacadeTests {
 
     @Test
     public void createGameTestFailed() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         serverFacade.logout(authData.authToken());
         CreateGameRequest request = new CreateGameRequest("gameName");
@@ -112,6 +120,7 @@ public class ServerFacadeTests {
 
     @Test
     public void joinGameTests() throws ResponseException{
+        serverFacade.delete();
         assertDoesNotThrow(() -> {
             AuthData authData = registerTestUser();
             int gameId = createGame(authData);
@@ -123,17 +132,18 @@ public class ServerFacadeTests {
 
     @Test
     public void failJoinGameTests() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         int gameId = createGame(authData);
-        System.out.println(gameId);
+        serverFacade.logout(authData.authToken());
         JoinGameRequest request = new JoinGameRequest("WHITE", gameId);
-        serverFacade.joinGame(authData.authToken(), request);
         ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.joinGame(authData.authToken(), request));
         assertNotNull(exception);
     }
 
     @Test
     public void listGamesTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         createGame(authData);
         createGame(authData);
@@ -144,12 +154,14 @@ public class ServerFacadeTests {
 
     @Test
     public void failListGamesTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         ListGamesResponse response = serverFacade.listGames(authData.authToken());
         assertTrue(response.games().isEmpty());
     }
     @Test
     public void deleteTest() throws ResponseException{
+        serverFacade.delete();
         AuthData authData = registerTestUser();
         serverFacade.delete();
         LoginRequest request = new LoginRequest(authData.username(), authData.authToken());

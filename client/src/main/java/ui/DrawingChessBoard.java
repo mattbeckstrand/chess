@@ -81,9 +81,9 @@ public class DrawingChessBoard {
         }
 
         for (int c = 1; c <= 8; c++) {
-            char file = (char) ('a' + (isWhitePerspective ? c - 1 : 8 - c));
-            board[0][c] = " " + file + " ";
-            board[9][c] = " " + file + " ";
+            char columnChar = (char) ('a' + (isWhitePerspective ? c - 1 : 8 - c));
+            board[0][c] = " " + columnChar + " ";
+            board[9][c] = " " + columnChar + " ";
         }
 
         for (int r = 0; r < 10; r++) {
