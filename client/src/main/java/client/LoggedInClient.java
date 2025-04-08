@@ -54,7 +54,7 @@ public class LoggedInClient implements Clients{
         String gameName = params[0];
         CreateGameRequest request = new CreateGameRequest(gameName);
         Integer gameID = server.createGame(request, authToken);
-        return "Successfully created game: " + gameID;
+        return "Successfully created game";
     }
 
     public String logout() throws ResponseException{
