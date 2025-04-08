@@ -17,7 +17,6 @@ public class Repl{
 
     public void setClient(Clients newClient){
         this.client = newClient;
-
     }
 
     public void run() {
