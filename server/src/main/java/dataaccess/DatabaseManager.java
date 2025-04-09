@@ -84,7 +84,8 @@ public class DatabaseManager {
                 "whiteUsername VARCHAR(225), " +
                 "blackUsername VARCHAR(225), " +
                 "gameName VARCHAR(225) NOT NULL, " +
-                "game TEXT NOT NULL)";
+                "game TEXT NOT NULL, " +
+                "isOver BOOLEAN NOT NULL DEFAULT FALSE)";
 
         try (var authStmt = conn.prepareStatement(createAuthTable);
              var userStmt = conn.prepareStatement(createUserTable);

@@ -45,6 +45,7 @@ public class SqlAuthDao implements AuthDAO {
         return null;
     }
 
+
     @Override
     public void deleteAuthByToken(String authToken) throws DataAccessException {
         String stmt = "DELETE FROM auth WHERE authToken = ?";

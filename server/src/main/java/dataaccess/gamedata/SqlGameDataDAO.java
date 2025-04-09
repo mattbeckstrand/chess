@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class SqlGameDataDAO implements GameDataDAO {
     public GameData createGame(String gameName) throws DataAccessException {
-        String stmt = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+        String stmt = "INSERT INTO games (whiteUsername, blackUsername, gameName, game, isOver) VALUES (?, ?, ?, ?, ?)";
         ChessGame game = new ChessGame();
         Gson gson = new Gson();
         String jsonGame = gson.toJson(game);
@@ -26,13 +26,14 @@ public class SqlGameDataDAO implements GameDataDAO {
             prepStmt.setString(2, null);
             prepStmt.setString(3, gameName);
             prepStmt.setString(4, jsonGame);
+            prepStmt.setBoolean(5, false);
             prepStmt.executeUpdate();
 
             try (ResultSet generatedKeys = prepStmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int gameID = generatedKeys.getInt(1);
                     System.out.println("Game added with ID: " + gameID);
-                    return new GameData(gameID, null, null, gameName, game);
+                    return new GameData(gameID, null, null, gameName, game, false);
                 } else {
                     throw new DataAccessException("Failed to retrieve game ID.");
                 }
@@ -53,7 +54,7 @@ public class SqlGameDataDAO implements GameDataDAO {
                 String jsonGame = results.getString("game");
                 ChessGame game = new Gson().fromJson(jsonGame, ChessGame.class);
                 return new GameData(results.getInt("gameID"), results.getString("whiteUsername"),
-                        results.getString("blackUsername"), results.getString("gameName"), game);
+                        results.getString("blackUsername"), results.getString("gameName"), game , results.getBoolean("isOver"));
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -73,7 +74,7 @@ public class SqlGameDataDAO implements GameDataDAO {
                 String jsonGame = results.getString("game");
                 ChessGame game = new Gson().fromJson(jsonGame, ChessGame.class);
                 GameData data = new GameData(results.getInt("gameID"), results.getString("whiteUsername"),
-                        results.getString("blackUsername"), results.getString("gameName"), game);
+                        results.getString("blackUsername"), results.getString("gameName"), game, results.getBoolean("isOver"));
                 games.put(data.getGameID(), data);
             }
         } catch (SQLException e) {
@@ -81,6 +82,7 @@ public class SqlGameDataDAO implements GameDataDAO {
         }
         return games;
     }
+
     @Override
     public void addPlayer(int gameId, String username, String tColor) throws DataAccessException {
         String stmt;
@@ -96,6 +98,21 @@ public class SqlGameDataDAO implements GameDataDAO {
             int affectedRows = prepStmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new DataAccessException("game not found or player already assigned.");
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public void finishGame(int gameId) throws DataAccessException {
+        String stmt = "UPDATE games SET isOver = ? WHERE gameID = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
+            prepStmt.setBoolean(1, true);
+            prepStmt.setInt(2, gameId);
+            int affectedRows = prepStmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DataAccessException("game not found");
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

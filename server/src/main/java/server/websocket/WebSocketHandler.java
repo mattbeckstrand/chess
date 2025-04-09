@@ -2,12 +2,15 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.auth.AuthDAO;
+import dataaccess.auth.SqlAuthDao;
+import dataaccess.gamedata.SqlGameDataDAO;
+import model.AuthData;
 import exception.ResponseException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import webSocketMessages.Action;
-import webSocketMessages.Notification;
 import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -25,32 +28,51 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
-            case CONNECT -> connect(command.getAuthToken(), session);
-            case LEAVE -> leave(command.getAuthToken());
+            case CONNECT -> connect(command.getAuthToken(), command.getGameID(), session);
+            case LEAVE -> leave(command.getAuthToken(), command.getGameID());
+            case RESIGN -> resign(command.getAuthToken(), command.getGameID());
         }
     }
 
-    private void connect(String authToken, Session session) throws IOException {
-        connections.add(authToken, session);
-        var message = String.format("%s is in the shop", visitorName);
-        var notification = new NotificationMessage(message);
-        connections.broadcast(authToken, notification);
+    private String getUsername(String authToken)throws DataAccessException{
+        SqlAuthDao authDAO = new SqlAuthDao();
+        AuthData auth = authDAO.findAuthByToken(authToken);
+        return auth.username();
     }
-
-    private void leave(String visitorName) throws IOException {
-        connections.remove(visitorName);
-        var message = String.format("%s left the shop", visitorName);
-        var notification = new NotificationMessage(Notification.Type.DEPARTURE, message);
-        connections.broadcast(visitorName, notification);
-    }
-
-    public void makeNoise(String petName, String sound) throws ResponseException {
+    private void connect(String authToken, int gameId, Session session) throws IOException {
+        connections.add(authToken, gameId, session);
         try {
-            var message = String.format("%s says %s", petName, sound);
-            var notification = new Notification(Notification.Type.NOISE, message);
-            connections.broadcast("", notification);
-        } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+            String username = getUsername(authToken);
+            var message = String.format("%s has joined", username);
+            var notification = new NotificationMessage(message);
+            connections.broadcastToGame(gameId, authToken, notification);
+        } catch (DataAccessException ex) {
+            throw new IOException("failed to look up username", ex);
+        }
+    }
+
+    private void leave(String authToken, int gameId) throws IOException {
+        connections.remove(authToken);
+        try {
+            String username = getUsername(authToken);
+            var message = String.format("%s left the game", username);
+            var notification = new NotificationMessage(message);
+            connections.broadcastToGame(gameId, authToken, notification);
+        } catch (DataAccessException ex) {
+            throw new IOException("failed to remove user", ex);
+        }
+    }
+
+    public void resign(String authToken, int gameId) throws IOException {
+        try {
+            String username = getUsername(authToken);
+            SqlGameDataDAO gameDao = new SqlGameDataDAO();
+            gameDao.finishGame(gameId);
+            var message = String.format("%s has resigned", username);
+            var notification = new NotificationMessage(message);
+            connections.broadcastToGame(gameId, authToken, notification);
+        } catch (DataAccessException ex) {
+            throw new IOException("failed to resign", ex);
         }
     }
 }
