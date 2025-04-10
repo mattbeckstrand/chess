@@ -4,6 +4,8 @@ import exception.ResponseException;
 import model.*;
 import server.ServerFacade;
 import ui.DrawingChessBoard;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,7 +87,7 @@ public class LoggedInClient implements Clients{
         return result.toString();
     }
 
-    public String playGame(String... params) throws ResponseException{
+    public String playGame(String... params) throws ResponseException, IOException {
         if (params.length != 2) {
             return "Usage: join <ID> [WHITE|BLACK]";
         }
@@ -95,16 +97,17 @@ public class LoggedInClient implements Clients{
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
         server.joinGame(authToken, request);
         DrawingChessBoard.drawChessBoard(System.out, playerColor);
-
+        repl.setClientToGame(serverUrl, authToken, gameId);
         return "Successfully joined game";
     }
 
-    public String observe(String ... params) throws ResponseException{
+    public String observe(String ... params) throws ResponseException, IOException {
         if (params.length != 1) {
             return "Usage: observe <ID>";
         }
         String stringGameId = params[0];
         int gameId = Integer.parseInt(stringGameId);
+        repl.setClientToGame(serverUrl, authToken, gameId);
 
         DrawingChessBoard.drawChessBoard(System.out, "WHITE");
         return "Game observed";

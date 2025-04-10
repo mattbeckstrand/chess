@@ -1,9 +1,15 @@
 package client;
 
+import client.websocket.NotificationHandler;
+import client.websocket.WebSocketFacade;
 import exception.ResponseException;
 import model.*;
 import server.ServerFacade;
 import ui.DrawingChessBoard;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,12 +20,19 @@ public class InGameClient implements Clients{
     private final String serverUrl;
     private final Repl repl;
     private final String authToken;
+    private WebSocketFacade ws;
+    private final NotificationHandler notificationHandler;
+    private final Integer gameId;
 
-    public InGameClient(String serverUrl, String authToken, Repl repl) {
+    public InGameClient(String serverUrl, String authToken, Repl repl, NotificationHandler notificationHandler, int gameId, WebSocketFacade ws) throws IOException {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
         this.authToken = authToken;
         this.repl = repl;
+        this.notificationHandler = notificationHandler;
+        this.gameId = gameId;
+        this.ws = ws;
+        ws.connect(authToken, gameId);
     }
 
     @Override
@@ -33,12 +46,11 @@ public class InGameClient implements Clients{
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "create" -> create(params);
-                case "logout" -> logout();
-                case "list" -> list();
-                case "play" -> playGame(params);
-                case "quit" -> "quit";
-                case "observe" -> observe(params);
+                case "redraw" -> redraw(params);
+                case "leave" -> leave();
+                case "move" -> move(params);
+                case "resign" -> resign(params);
+                case "highlight" -> highlightMoves(params);
                 default -> help();
 
             };
@@ -47,76 +59,55 @@ public class InGameClient implements Clients{
         }
     }
 
-    public String create(String... params) throws ResponseException {
-        if (params.length != 1) {
-            return "Usage: create <NAME>";
-        }
-        String gameName = params[0];
-        CreateGameRequest request = new CreateGameRequest(gameName);
-        Integer gameID = server.createGame(request, authToken);
+    public String redraw(String... params) throws ResponseException {
+
         return "Successfully created game";
     }
 
-    public String logout() throws ResponseException{
-        server.logout(this.authToken);
-        repl.setClient(new UnloggedInClient(serverUrl, repl));
-        return "Successfully logged out ";
+    public String leave() {
+        try {
+            ws.leave(authToken, gameId);
+            repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
+            return "Successfully left game.";
+        } catch (IOException e) {
+            return "Failed to leave game: " + e.getMessage();
+        }
     }
 
-    public String list() throws ResponseException {
-        ListGamesResponse response = server.listGames(authToken);
-        StringBuilder result = new StringBuilder();
-        List<GameSummary> games = response.games();
 
-        int count = 1;
-        for (GameSummary game : games) {
-            result.append(count++).append(". ");
-            result.append("Game Name: ").append(game.gameName()).append("\n");
-            result.append("Players:\n");
-            if (game.whiteUsername() != null) {
-                result.append("  White: ").append(game.whiteUsername()).append("\n");
-            }
-            if (game.blackUsername() != null) {
-                result.append("  Black: ").append(game.blackUsername()).append("\n");
-            }
-            result.append("\n");
+    public String move(String ... params) throws ResponseException {
+        try {
+            String startingPos = params[1];
+
+            ws.leave(authToken, gameId);
+            repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
+            return "Successfully left game.";
+        } catch (IOException e) {
+            return "Failed to leave game: " + e.getMessage();
         }
-
-        return result.toString();
     }
 
-    public String playGame(String... params) throws ResponseException{
-        if (params.length != 2) {
-            return "Usage: join <ID> [WHITE|BLACK]";
+    public String resign() throws ResponseException {
+        try {
+            ws.resign(authToken, gameId);
+            repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
+            return "Successfully resigned.";
+        } catch (IOException e) {
+            return "Failed to resign: " + e.getMessage();
         }
-        String stringGameID = params[0];
-        int gameId = Integer.parseInt(stringGameID);
-        String playerColor = params[1];
-        JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
-        server.joinGame(authToken, request);
-        DrawingChessBoard.drawChessBoard(System.out, playerColor);
-        return "Successfully joined game";
     }
 
-    public String observe(String ... params) throws ResponseException{
-        if (params.length != 1) {
-            return "Usage: observe <ID>";
-        }
-        String stringGameId = params[0];
-        int gameId = Integer.parseInt(stringGameId);
-
-        DrawingChessBoard.drawChessBoard(System.out, "WHITE");
+    public String highlightMoves(String ... params) throws ResponseException{
         return "Game observed";
     }
 
 
     public String help() {
         return SET_TEXT_COLOR_MAGENTA + """
-                create <NAME>""" + RESET_TEXT_COLOR + " - a game\n" +
-                SET_TEXT_COLOR_MAGENTA + "list" + RESET_TEXT_COLOR+ " - games\n"+
-                SET_TEXT_COLOR_MAGENTA + "play <ID> [WHITE|BLACK]" + RESET_TEXT_COLOR+ " - a game\n" +
-                SET_TEXT_COLOR_MAGENTA + "observe <ID>" + RESET_TEXT_COLOR + " - a game\n" +
-                SET_TEXT_COLOR_MAGENTA + "logout" + RESET_TEXT_COLOR + " - when you are done\n" +
+                redraw""" + RESET_TEXT_COLOR+ "- the chess board\n"+
+                SET_TEXT_COLOR_MAGENTA + "leave" + RESET_TEXT_COLOR+ " - a game\n" +
+                SET_TEXT_COLOR_MAGENTA + "move <StartingPos> <EndingPos>" + RESET_TEXT_COLOR + "\n" +
+                SET_TEXT_COLOR_MAGENTA + "leave" + RESET_TEXT_COLOR + " - when you are done\n" +
                 SET_TEXT_COLOR_MAGENTA + "help" +  RESET_TEXT_COLOR + " - with possible commands";
     }
 }

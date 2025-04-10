@@ -2,11 +2,14 @@ package client;
 
 
 import client.websocket.NotificationHandler;
+import client.websocket.WebSocketFacade;
+import exception.ResponseException;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import static java.awt.Color.GREEN;
@@ -24,6 +27,17 @@ public class Repl implements NotificationHandler {
 
     public void setClient(Clients newClient){
         this.client = newClient;
+    }
+
+    public void setClientToGame(String serverUrl, String authToken, int gameId) throws IOException {
+        WebSocketFacade ws;
+        try {
+            ws = new WebSocketFacade(serverUrl, this); // 'this' is your NotificationHandler
+        } catch (ResponseException e) {
+            System.out.println("Failed to start WebSocket: " + e.getMessage());
+            return;
+        }
+        this.client = new InGameClient(serverUrl, authToken, this, this, gameId, ws);
     }
 
     public void run() {

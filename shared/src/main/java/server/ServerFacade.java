@@ -43,6 +43,11 @@ public class ServerFacade {
         this.makeRequestWithAuth("PUT", path, authToken, request, null);
     }
 
+    public GameData getGame(String authToken, int gameId) throws ResponseException {
+        var path = "/game/" + gameId;
+        return this.makeRequestWithAuth("GET", path, authToken, null, GameData.class);
+    }
+
     public ListGamesResponse listGames(String authToken) throws ResponseException{
         var path = "/game";
         return this.makeRequestWithAuth("GET", path, authToken, null, ListGamesResponse.class);

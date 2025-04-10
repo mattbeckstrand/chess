@@ -1,5 +1,6 @@
 package client.websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 
@@ -7,7 +8,10 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.eclipse.jetty.server.Authentication;
 import websocket.messages.ServerMessage;
+import websocket.commands.UserGameCommand;
 
 //need to extend Endpoint for websocket to work properly
 public class WebSocketFacade extends Endpoint {
@@ -41,6 +45,29 @@ public class WebSocketFacade extends Endpoint {
     //Endpoint requires this method, but you don't have to do anything
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
+
+    public void send(UserGameCommand command) throws IOException {
+        String json = new Gson().toJson(command);
+        session.getBasicRemote().sendText(json);
+    }
+
+    public void connect(String authToken, int gameID) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, null);
+        send(command);
+    }
+    public void makeMove(String authToken, int gameId, ChessMove move) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameId, move);
+        send(command);
+    }
+
+    public void leave(String authToken, int gameId) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameId, null);
+        send(command);
+    }
+    public void resign(String authToken, int gameId) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameId, null);
+        send(command);
     }
 
 }
