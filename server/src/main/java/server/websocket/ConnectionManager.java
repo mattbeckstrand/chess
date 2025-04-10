@@ -32,7 +32,7 @@ public class ConnectionManager {
     }
 
     public void broadcastToGame(int gameID, String excludeAuthToken, ServerMessage message) throws IOException {
-        if (!gameConnections.containsKey(gameID)) return;
+        if (!gameConnections.containsKey(gameID)) {return;}
 
         var removeList = new HashSet<Connection>();
         for (var c : gameConnections.get(gameID)) {
@@ -52,10 +52,10 @@ public class ConnectionManager {
     }
     public void sendToClient(String authToken, ServerMessage message) throws IOException {
         Integer gameID = tokenToGameMap.get(authToken);
-        if (gameID == null) return;
+        if (gameID == null) {return;}
 
         Set<Connection> connectionsInGame = gameConnections.get(gameID);
-        if (connectionsInGame == null) return;
+        if (connectionsInGame == null) {return;}
 
         for (Connection c : connectionsInGame) {
             if (c.authToken.equals(authToken) && c.session.isOpen()) {

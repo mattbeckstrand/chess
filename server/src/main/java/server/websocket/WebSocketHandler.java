@@ -187,7 +187,8 @@ public class WebSocketHandler {
                 connections.sendToClient(authToken, updatedGame);
 
                 ChessPosition endPos = move.getEndPosition();
-                connections.broadcastToGame(gameId, authToken, new NotificationMessage("Player moved piece from " + toChessNotation(move.getStartPosition())+ " to " + toChessNotation(endPos)));
+                connections.broadcastToGame(gameId, authToken, new NotificationMessage("Player moved piece from " +
+                        toChessNotation(move.getStartPosition())+ " to " + toChessNotation(endPos)));
             }
         } catch (InvalidMoveException e) {
             connections.sendToClient(authToken, new ErrorMessage("Invalid Move: " + e.getMessage()));

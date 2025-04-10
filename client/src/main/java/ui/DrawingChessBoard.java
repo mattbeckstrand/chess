@@ -42,7 +42,7 @@ public class DrawingChessBoard {
 
                 boolean shouldHighlight = highlights != null && highlights.contains(new ChessPosition(row, col));
                 String background = ((row + col) % 2 == 0) ? light : dark;
-                if (shouldHighlight) background = highlightBg;
+                if (shouldHighlight) {background = highlightBg;}
 
                 out.print(background + square + reset);
             }

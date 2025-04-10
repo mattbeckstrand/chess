@@ -6,6 +6,7 @@ import dataaccess.gamedata.GameDataDAO;
 import dataaccess.gamedata.MemoryGameDataDao;
 import exception.ResponseException;
 import model.*;
+import service.ListGamesService;
 
 
 public class CreateGameService {
@@ -21,19 +22,10 @@ public class CreateGameService {
         this.gameName = gameName;
     }
 
-    public void checkAuth() throws ResponseException {
-        try {
-            AuthData auth = authDao.findAuthByToken(authToken);
-            if (auth == null) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-        } catch (DataAccessException e) {
-            throw new ResponseException(500, "Database error: " + e.getMessage());
-        }
-    }
 
     public GameData addGameData() throws ResponseException {
-        this.checkAuth();
+        ListGamesService service = new ListGamesService(authToken, authDao, gameDataDao);
+        service.checkAuth();
         try {
             return gameDataDao.createGame(gameName);
         } catch (DataAccessException e) {

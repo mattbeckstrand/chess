@@ -5,6 +5,7 @@ import dataaccess.auth.AuthDAO;
 import dataaccess.gamedata.GameDataDAO;
 import exception.ResponseException;
 import model.*;
+import service.ListGamesService;
 
 public class GetGameService {
     private final String authToken;
@@ -17,21 +18,12 @@ public class GetGameService {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
         this.gameId = gameId;
-    }
 
-    public void checkAuth() throws ResponseException {
-        try {
-            AuthData auth = authDAO.findAuthByToken(authToken);
-            if (auth == null) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-        } catch (DataAccessException e) {
-            throw new ResponseException(500, "Database error: " + e.getMessage());
-        }
     }
 
     public GameData getGameData() throws ResponseException {
-        this.checkAuth();
+        ListGamesService service = new ListGamesService(authToken, authDAO, gameDAO);
+        service.checkAuth();
         try {
             return gameDAO.getGame(gameId);
         } catch (DataAccessException e) {

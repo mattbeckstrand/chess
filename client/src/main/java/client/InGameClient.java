@@ -27,7 +27,8 @@ public class InGameClient implements Clients{
     private final Integer gameId;
     private final ChessGame.TeamColor teamColor;
 
-    public InGameClient(String serverUrl, String authToken, Repl repl, NotificationHandler notificationHandler, int gameId, WebSocketFacade ws, ChessGame.TeamColor teamColor) throws IOException {
+    public InGameClient(String serverUrl, String authToken, Repl repl, NotificationHandler notificationHandler,
+                        int gameId, WebSocketFacade ws, ChessGame.TeamColor teamColor) throws IOException {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
         this.authToken = authToken;
@@ -123,7 +124,7 @@ public class InGameClient implements Clients{
 
 
     private ChessPosition parsePosition(String pos) {
-        if (pos.length() != 2) throw new IllegalArgumentException("Invalid position: " + pos);
+        if (pos.length() != 2) {throw new IllegalArgumentException("Invalid position: " + pos);}
         char file = pos.charAt(0);
         char rank = pos.charAt(1);
         int column = file - 'a' + 1;
