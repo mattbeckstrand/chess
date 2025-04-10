@@ -95,6 +95,7 @@ public class LoggedInClient implements Clients{
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
         server.joinGame(authToken, request);
         DrawingChessBoard.drawChessBoard(System.out, playerColor);
+
         return "Successfully joined game";
     }
 

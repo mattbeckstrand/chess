@@ -22,7 +22,6 @@ public class SqlAuthDao implements AuthDAO {
             prepStmt.setString(1, auth.authToken());
             prepStmt.setString(2, auth.username());
             prepStmt.executeUpdate();
-            System.out.println("auth Added");
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -36,7 +35,6 @@ public class SqlAuthDao implements AuthDAO {
             prepStmt.setString(1, authToken);
             ResultSet results = prepStmt.executeQuery();
             if (results.next()) {
-                System.out.println(results.getString("username"));
                 return new AuthData(results.getString("username"), authToken);
             }
         } catch (SQLException e) {

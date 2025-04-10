@@ -7,6 +7,8 @@ import dataaccess.gamedata.MemoryGameDataDao;
 import exception.ResponseException;
 import model.*;
 
+import java.util.Objects;
+
 public class JoinGameService {
     private final GameDataDAO gameDataDao;
     private final AuthDAO authDao;
@@ -35,12 +37,12 @@ public class JoinGameService {
     }
 
     public GameData joinGame() throws ResponseException, DataAccessException {
-        System.out.println(playerColor);
         if (playerColor == null || (!playerColor.equals("WHITE") && !playerColor.equals("BLACK"))) {
             throw new ResponseException(400, "Error: Invalid player color");
         }
 
         String username = this.getUserName();
+        System.out.println(username);
 
         try {
             GameData game = gameDataDao.getGame(gameId);
@@ -48,7 +50,7 @@ public class JoinGameService {
                 throw new ResponseException(400, "Error: game not found");
             }
 
-            if (playerColor.equals("WHITE") && game.getWhiteUsername() != null) {
+            if (playerColor.equals("WHITE") && (game.getWhiteUsername() != null && !game.getWhiteUsername().equals(username))) {
                 throw new ResponseException(403, "Error: white player slot is already taken");
             }
             if (playerColor.equals("BLACK") && game.getBlackUsername() != null) {

@@ -1,12 +1,19 @@
 package client;
 
 
+import client.websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
 import static java.awt.Color.GREEN;
+import static java.awt.Color.RED;
 import static ui.EscapeSequences.*;
 
-public class Repl{
+public class Repl implements NotificationHandler {
     private Clients client;
     private String authToken;
 
@@ -44,7 +51,23 @@ public class Repl{
         System.out.println();
     }
 
-
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> {
+                NotificationMessage notif = (NotificationMessage) message;
+                System.out.println(RED + notif.getNotification());
+            }
+            case ERROR -> {
+                ErrorMessage err = (ErrorMessage) message;
+                System.out.println(RED + "ERROR: " + err.getError());
+            }
+            case LOAD_GAME -> {
+                LoadGameMessage gameMsg = (LoadGameMessage) message;
+                System.out.println("Game loaded: " + gameMsg.getGame().toString());
+            }
+        }
+        printPrompt();
+    }
 
     private void printPrompt() {
         String status = client.isLoggedIn() ? SET_TEXT_COLOR_BLUE + "[LOGGED_IN]" : SET_TEXT_COLOR_MAGENTA + "[LOGGED_OUT]";

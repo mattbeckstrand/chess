@@ -98,7 +98,7 @@ public class ChessGame {
         boolean found = false;
         ChessPosition endPosition = move.getEndPosition();
         if(board.getPiece(startPosition) == null || board.getPiece(startPosition).getTeamColor() != this.getTeamTurn()){
-            throw new InvalidMoveException("invalid move");
+            throw new InvalidMoveException("Error: invalid move");
         }
         Collection<ChessMove> validMoves = validMoves(startPosition);
 
@@ -109,7 +109,7 @@ public class ChessGame {
             }
         }
         if (!found){
-            throw new InvalidMoveException("invalid move");
+            throw new InvalidMoveException("Error: invalid move");
         }
         ChessPiece.PieceType promPiece = move.getPromotionPiece();
         TeamColor color = board.getPiece(startPosition).getTeamColor();

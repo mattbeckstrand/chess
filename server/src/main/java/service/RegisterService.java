@@ -39,7 +39,6 @@ public class RegisterService {
     }
     public void addUserData() throws ResponseException, DataAccessException {
         checkForUser();
-        System.out.println("Attempting to add user: " + userData.getUsername());
         userDao.addUser(userData);
     }
 

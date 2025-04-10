@@ -159,4 +159,25 @@ public class SqlGameDataDAO implements GameDataDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
+    public void setUserNull(Integer gameId, ChessGame.TeamColor teamColor) throws DataAccessException {
+        String stmt;
+        if (teamColor.equals(ChessGame.TeamColor.BLACK)) {
+            stmt = "UPDATE games SET blackUsername = ? WHERE gameID = ?";
+        } else {
+            stmt = "UPDATE games SET whiteUsername = ? WHERE gameID = ?";
+        }
+
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
+            prepStmt.setString(1, null);
+            prepStmt.setInt(2, gameId);
+            int affectedRows = prepStmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DataAccessException("Error in removing user from game");
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }
