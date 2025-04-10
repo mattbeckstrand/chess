@@ -16,13 +16,8 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
-
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Timer;
-
 
 @WebSocket
 public class WebSocketHandler {
@@ -147,51 +142,63 @@ public class WebSocketHandler {
 
     }
 
-    public void makeMove(String authToken, int gameId, ChessMove move, Session session) throws IOException{
+    public void makeMove(String authToken, int gameId, ChessMove move, Session session) throws IOException {
         try {
             SqlAuthDao authDao = new SqlAuthDao();
             AuthData authData = authDao.findAuthByToken(authToken);
 
-            if (authData == null){
+            if (authData == null) {
                 sendErrorToSession(session, "Auth Data null");
                 return;
             }
-            if (checkIsOverFlag(gameId)){
-                connections.sendToClient(authToken, new ErrorMessage("No moves acceptable, game Resigned"));
+            if (checkIsOverFlag(gameId)) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: game is already over, no moves allowed."));
                 return;
             }
-            SqlGameDataDAO gameDao = new SqlGameDataDAO();
             ChessGame game = getGame(gameId);
-            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() != getColor(authToken, gameId)) {
-                throw new InvalidMoveException("Wrong team color");
+            ChessGame.TeamColor playerColor = getColor(authToken, gameId);
+            if (game.getTeamTurn() != playerColor){
+                connections.sendToClient(authToken, new ErrorMessage("Error: not your turn!"));
             }
-            game.makeMove(move);
+            ChessPiece startPiece = game.getBoard().getPiece(move.getStartPosition());
+            if (startPiece == null) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: no piece at start position."));
+                return;
+            }
+            if (startPiece.getTeamColor() != playerColor) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: that piece isn't yours."));
+                return;
+            }
 
-            ChessPosition endPos = move.getEndPosition();
-            String serilalizedPos = new Gson().toJson(endPos);
-            String serializedGame = new Gson().toJson(game);
-            gameDao.updateGameMove(serializedGame, gameId);
-            LoadGameMessage loadGameNotif;
+            game.makeMove(move);
+            SqlGameDataDAO gameDao = new SqlGameDataDAO();
+            gameDao.updateGameMove(new Gson().toJson(game), gameId);
+
             if (game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
                 gameDao.finishGame(gameId);
-                ChessGame finishedGame = getGame(gameId);
-                loadGameNotif = new LoadGameMessage(finishedGame);
-            }
-            else {
-                loadGameNotif = new LoadGameMessage(game);
-            }
-            String message = String.format("User has moved to %s", serilalizedPos);
-            var notification = new NotificationMessage(message);
-            connections.broadcastToGame(gameId, authToken, loadGameNotif);
-            connections.sendToClient(authToken, loadGameNotif);
-            connections.broadcastToGame(gameId, authToken, notification);
-        }  catch (InvalidMoveException e) {
-            var error = new ErrorMessage("Error: " + e.getMessage());
-            connections.sendToClient(authToken, error);
-        } catch (DataAccessException ex) {
-            connections.sendToClient(authToken, new ErrorMessage(ex.getMessage()));
-            throw new IOException("Move failed", ex);
+                ChessGame finished = getGame(gameId);
+                connections.broadcastToGame(gameId, authToken, new LoadGameMessage(finished));
+                connections.sendToClient(authToken, new LoadGameMessage(finished));
+                connections.broadcastToGame(gameId, authToken, new NotificationMessage("Game over by checkmate!"));
+            } else {
+                LoadGameMessage updatedGame = new LoadGameMessage(game);
+                connections.broadcastToGame(gameId, authToken, updatedGame);
+                connections.sendToClient(authToken, updatedGame);
 
+                ChessPosition endPos = move.getEndPosition();
+                connections.broadcastToGame(gameId, authToken, new NotificationMessage("Player moved piece from " + toChessNotation(move.getStartPosition())+ " to " + toChessNotation(endPos)));
+            }
+        } catch (InvalidMoveException e) {
+            connections.sendToClient(authToken, new ErrorMessage("Invalid Move: " + e.getMessage()));
+        } catch (DataAccessException ex) {
+            connections.sendToClient(authToken, new ErrorMessage("Database Error: " + ex.getMessage()));
+            throw new IOException("Move failed", ex);
         }
     }
+    private String toChessNotation(ChessPosition position) {
+        char col = (char) ('a' + position.getColumn() - 1);
+        int row = position.getRow();
+        return "" + col + row;
+    }
+
 }

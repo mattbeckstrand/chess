@@ -3,78 +3,64 @@ package ui;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
-
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import static ui.EscapeSequences.*;
 
 public class DrawingChessBoard {
 
-    public static void drawChessBoard(PrintStream out, ChessGame game, ChessGame.TeamColor teamColor, List<ChessPosition> highlights) {
-        String light = SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE;
+    public static void drawChessBoard(PrintStream out, ChessGame game, ChessGame.TeamColor perspective, List<ChessPosition> highlights) {
+        String light = SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK;
         String dark = SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE;
         String highlightBg = SET_BG_COLOR_GREEN + SET_TEXT_COLOR_BLACK;
         String reset = RESET_BG_COLOR + RESET_TEXT_COLOR;
 
-        String[][] board = new String[10][10];
-        boolean isWhitePerspective = Objects.equals(teamColor, ChessPiece.TeamColor.WHITE);
+        boolean isWhitePerspective = (perspective == ChessGame.TeamColor.WHITE);
 
-        for (int r = 0; r < 10; r++) {
-            for (int c = 0; c < 10; c++) {
-                board[r][c] = "   ";
-            }
+        int[] rowOrder = isWhitePerspective ? new int[]{8, 7, 6, 5, 4, 3, 2, 1} : new int[]{1, 2, 3, 4, 5, 6, 7, 8};
+        int[] colOrder = isWhitePerspective ? new int[]{1, 2, 3, 4, 5, 6, 7, 8} : new int[]{8, 7, 6, 5, 4, 3, 2, 1};
+
+        // Print top column labels
+        out.print("   ");
+        for (int col : colOrder) {
+            char colLabel = (char) ('a' + col - 1);
+            out.print(SET_TEXT_COLOR_MAGENTA + " " + colLabel + " " + reset);
         }
+        out.println();
 
-        var boardState = game.getBoard();
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition pos = new ChessPosition(row, col);
-                var piece = boardState.getPiece(pos);
+        // Print each row with left and right row numbers
+        for (int row : rowOrder) {
+            out.print(SET_TEXT_COLOR_MAGENTA + " " + row + " " + reset);
+            for (int col : colOrder) {
+                ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
+                String square = "   ";
                 if (piece != null) {
-                    int boardRow = isWhitePerspective ? row : 9 - row;
-                    int boardCol = isWhitePerspective ? col : 9 - col;
-                    board[boardRow][boardCol] = piece.getPieceType().toString().substring(0, 1);
-                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        board[boardRow][boardCol] = WHITE_PIECE_MAP.get(piece.getPieceType());
-                    } else {
-                        board[boardRow][boardCol] = BLACK_PIECE_MAP.get(piece.getPieceType());
-                    }
+                    square = piece.getTeamColor() == ChessGame.TeamColor.WHITE
+                            ? WHITE_PIECE_MAP.get(piece.getPieceType())
+                            : BLACK_PIECE_MAP.get(piece.getPieceType());
                 }
+
+                boolean shouldHighlight = highlights != null && highlights.contains(new ChessPosition(row, col));
+                String background = ((row + col) % 2 == 0) ? light : dark;
+                if (shouldHighlight) background = highlightBg;
+
+                out.print(background + square + reset);
             }
-        }
-
-        for (int r = 1; r <= 8; r++) {
-            int labelRow = isWhitePerspective ? r : 9 - r;
-            board[r][0] = " " + labelRow + " ";
-            board[r][9] = " " + labelRow + " ";
-        }
-
-        for (int c = 1; c <= 8; c++) {
-            char columnChar = (char) ('a' + (isWhitePerspective ? c - 1 : 8 - c));
-            board[0][c] = " " + columnChar + " ";
-            board[9][c] = " " + columnChar + " ";
-        }
-
-        for (int r = 0; r < 10; r++) {
-            for (int c = 0; c < 10; c++) {
-                boolean isEdge = r == 0 || r == 9 || c == 0 || c == 9;
-                if (isEdge) {
-                    out.print(SET_TEXT_COLOR_MAGENTA + board[r][c] + reset);
-                } else {
-                    int gameRow = isWhitePerspective ? r : 9 - r;
-                    int gameCol = isWhitePerspective ? c : 9 - c;
-                    ChessPosition currentPos = new ChessPosition(gameRow, gameCol);
-                    boolean shouldHighlight = highlights != null && highlights.stream().anyMatch(p -> p.equals(currentPos));
-                    String bg = shouldHighlight ? highlightBg : ((r + c) % 2 == 0 ? light : dark);
-                    out.print(bg + board[r][c] + reset);
-                }
-            }
+            out.print(SET_TEXT_COLOR_MAGENTA + " " + row + " " + reset);
             out.println();
         }
+
+        // Print bottom column labels
+        out.print("   ");
+        for (int col : colOrder) {
+            char colLabel = (char) ('a' + col - 1);
+            out.print(SET_TEXT_COLOR_MAGENTA + " " + colLabel + " " + reset);
+        }
+        out.println();
     }
+
     public static final Map<ChessPiece.PieceType, String> WHITE_PIECE_MAP = Map.of(
             ChessPiece.PieceType.KING, WHITE_KING,
             ChessPiece.PieceType.QUEEN, WHITE_QUEEN,

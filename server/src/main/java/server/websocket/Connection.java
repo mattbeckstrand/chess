@@ -15,6 +15,7 @@ public class Connection {
     }
 
     public void send(String msg) throws IOException {
+        System.out.println("DEBUG: Sending message to session: " + msg);
         session.getRemote().sendString(msg);
     }
 }

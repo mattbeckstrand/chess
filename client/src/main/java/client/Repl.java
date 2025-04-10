@@ -43,7 +43,7 @@ public class Repl implements NotificationHandler {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to 240 chess. Type Help to get started.");
+        System.out.println("Welcome to 240 chess. Type Help to get started.");
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
@@ -71,11 +71,11 @@ public class Repl implements NotificationHandler {
         switch (message.getServerMessageType()) {
             case NOTIFICATION -> {
                 NotificationMessage notif = (NotificationMessage) message;
-                System.out.println(RED + notif.getNotification());
+                System.out.println(SET_TEXT_COLOR_RED + notif.getNotification() + RESET_TEXT_COLOR);
             }
             case ERROR -> {
                 ErrorMessage err = (ErrorMessage) message;
-                System.out.println(RED + "ERROR: " + err.getError());
+                System.out.println(SET_TEXT_COLOR_RED + "ERROR: " + err.getError() + RESET_TEXT_COLOR);
             }
             case LOAD_GAME -> {
                 LoadGameMessage gameMsg = (LoadGameMessage) message;
@@ -88,7 +88,7 @@ public class Repl implements NotificationHandler {
 
     private void printPrompt() {
         String status = client.isLoggedIn() ? (client.inGame() ? SET_TEXT_COLOR_BLUE + "[IN_GAME]" : SET_TEXT_COLOR_BLUE + "[LOGGED_IN]") : SET_TEXT_COLOR_MAGENTA + "[LOGGED_OUT]";
-        System.out.print("\n" + RESET_TEXT_COLOR + status + RESET_TEXT_COLOR + " >>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + RESET_TEXT_COLOR + status + RESET_TEXT_COLOR + " >>> " + SET_TEXT_COLOR_GREEN + "\n");
     }
 
 }

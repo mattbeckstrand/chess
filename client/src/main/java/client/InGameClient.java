@@ -12,6 +12,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static ui.EscapeSequences.*;
@@ -130,8 +131,26 @@ public class InGameClient implements Clients{
         return new ChessPosition(row, column);
     }
 
-    public String highlightMoves(String ... params) throws ResponseException{
-        return "Game observed";
+    public String highlightMoves(String ... params) throws ResponseException {
+        if (params.length != 1) {
+            return "Usage: highlight <PiecePos>";
+        }
+
+        ChessPosition pos = parsePosition(params[0]);
+        GameData data = server.getGame(authToken, gameId);
+        ChessGame game = data.getGame();
+        Collection<ChessMove> validMoves = game.validMoves(pos);
+
+        if (validMoves == null || validMoves.isEmpty()) {
+            return "No valid moves for that piece.";
+        }
+
+        List<ChessPosition> highlights = validMoves.stream()
+                .map(ChessMove::getEndPosition)
+                .toList();
+
+        DrawingChessBoard.drawChessBoard(System.out, game, teamColor, highlights);
+        return "Moves Highlighted";
     }
 
 
@@ -140,7 +159,7 @@ public class InGameClient implements Clients{
                 redraw""" + RESET_TEXT_COLOR+ "- the chess board\n"+
                 SET_TEXT_COLOR_MAGENTA + "leave" + RESET_TEXT_COLOR+ " - a game\n" +
                 SET_TEXT_COLOR_MAGENTA + "move <StartingPos> <EndingPos>" + RESET_TEXT_COLOR + "\n" +
-                SET_TEXT_COLOR_MAGENTA + "leave" + RESET_TEXT_COLOR + " - when you are done\n" +
+                SET_TEXT_COLOR_MAGENTA + "highlight" + RESET_TEXT_COLOR + " - moves\n" +
                 SET_TEXT_COLOR_MAGENTA + "help" +  RESET_TEXT_COLOR + " - with possible commands";
     }
 }

@@ -26,11 +26,18 @@ public class WebSocketFacade extends Endpoint {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
 
-            //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+                    Gson gson = new Gson();
+                    var jsonObject = gson.fromJson(message, com.google.gson.JsonObject.class);
+                    String type = jsonObject.get("serverMessageType").getAsString();
+                    ServerMessage notification = switch (type) {
+                        case "ERROR" -> gson.fromJson(message, websocket.messages.ErrorMessage.class);
+                        case "NOTIFICATION" -> gson.fromJson(message, websocket.messages.NotificationMessage.class);
+                        case "LOAD_GAME" -> gson.fromJson(message, websocket.messages.LoadGameMessage.class);
+                        case null, default -> gson.fromJson(message, ServerMessage.class);
+                    };
                     notificationHandler.notify(notification);
                 }
             });
@@ -42,7 +49,6 @@ public class WebSocketFacade extends Endpoint {
     //Endpoint requires this method, but you don't have to do anything
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        System.out.println("Websocket connection opened");
     }
 
     public void send(UserGameCommand command) throws IOException {
