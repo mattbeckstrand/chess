@@ -97,7 +97,7 @@ public class LoggedInClient implements Clients{
 
     public String playGame(String... params) throws ResponseException, IOException {
         if (params.length != 2) {
-            return "Usage: join <Id> [WHITE|BLACK]";
+            return "Usage: play <Id> [WHITE|BLACK]";
         }
         int index = Integer.parseInt(params[0]) - 1;
         if (lastListedGames == null || index < 0 || index >= lastListedGames.size()) {

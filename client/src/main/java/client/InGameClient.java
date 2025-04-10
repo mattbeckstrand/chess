@@ -21,7 +21,7 @@ public class InGameClient implements Clients{
     private final String serverUrl;
     private final Repl repl;
     private final String authToken;
-    private WebSocketFacade ws;
+    private final WebSocketFacade ws;
     private final NotificationHandler notificationHandler;
     private final Integer gameId;
     private final ChessGame.TeamColor teamColor;
@@ -48,6 +48,7 @@ public class InGameClient implements Clients{
         return true;
     }
 
+    @Override
     public String eval(String input) {
         try {
             var tokens = input.split(" ");
@@ -65,6 +66,11 @@ public class InGameClient implements Clients{
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    @Override
+    public ChessGame.TeamColor getTeamColor() {
+        return teamColor;
     }
 
     public String redraw() throws ResponseException {
@@ -94,16 +100,13 @@ public class InGameClient implements Clients{
             String startingPos = params[0];
             String endingPos = params[1];
             ChessPosition startPosition = parsePosition(startingPos);
-            GameData gameData = server.getGame(authToken, gameId);
-            ChessGame game = gameData.getGame();
-            ChessBoard board = game.getBoard();
-            ChessPiece.PieceType type = board.getPiece(startPosition).getPieceType();
-            ChessMove move = new ChessMove(startPosition, parsePosition(endingPos), type);
+            ChessPosition endPosition = parsePosition(endingPos);
+
+            ChessMove move = new ChessMove(startPosition, endPosition, null);
             ws.makeMove(authToken, gameId, move);
-            repl.setClient(new LoggedInClient(serverUrl, authToken, repl));
-            return "Successfully left game.";
+            return "Move made successfully";
         } catch (IOException e) {
-            return "Failed to leave game: " + e.getMessage();
+            return "Failed to send move: " + e.getMessage();
         }
     }
 
@@ -130,8 +133,6 @@ public class InGameClient implements Clients{
     public String highlightMoves(String ... params) throws ResponseException{
         return "Game observed";
     }
-
-
 
 
     public String help() {

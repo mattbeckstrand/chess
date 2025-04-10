@@ -28,7 +28,6 @@ public class DrawingChessBoard {
             }
         }
 
-        // Place pieces from the actual game board
         var boardState = game.getBoard();
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
@@ -37,7 +36,7 @@ public class DrawingChessBoard {
                 if (piece != null) {
                     int boardRow = isWhitePerspective ? row : 9 - row;
                     int boardCol = isWhitePerspective ? col : 9 - col;
-                    board[boardRow][boardCol] = piece.getPieceType().toString().substring(0, 1); // You can replace this with actual UI icons
+                    board[boardRow][boardCol] = piece.getPieceType().toString().substring(0, 1);
                     if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
                         board[boardRow][boardCol] = WHITE_PIECE_MAP.get(piece.getPieceType());
                     } else {
@@ -47,9 +46,8 @@ public class DrawingChessBoard {
             }
         }
 
-        // Add row/col labels
         for (int r = 1; r <= 8; r++) {
-            int labelRow = isWhitePerspective ? 9 - r : r;
+            int labelRow = isWhitePerspective ? r : 9 - r;
             board[r][0] = " " + labelRow + " ";
             board[r][9] = " " + labelRow + " ";
         }
@@ -60,7 +58,6 @@ public class DrawingChessBoard {
             board[9][c] = " " + columnChar + " ";
         }
 
-        // Draw the board with highlights
         for (int r = 0; r < 10; r++) {
             for (int c = 0; c < 10; c++) {
                 boolean isEdge = r == 0 || r == 9 || c == 0 || c == 9;

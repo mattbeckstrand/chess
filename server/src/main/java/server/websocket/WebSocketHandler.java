@@ -180,7 +180,6 @@ public class WebSocketHandler {
             else {
                 loadGameNotif = new LoadGameMessage(game);
             }
-
             String message = String.format("User has moved to %s", serilalizedPos);
             var notification = new NotificationMessage(message);
             connections.broadcastToGame(gameId, authToken, loadGameNotif);
@@ -190,7 +189,9 @@ public class WebSocketHandler {
             var error = new ErrorMessage("Error: " + e.getMessage());
             connections.sendToClient(authToken, error);
         } catch (DataAccessException ex) {
+            connections.sendToClient(authToken, new ErrorMessage(ex.getMessage()));
             throw new IOException("Move failed", ex);
+
         }
     }
 }

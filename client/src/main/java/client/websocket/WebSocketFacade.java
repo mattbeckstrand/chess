@@ -3,17 +3,14 @@ package client.websocket;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
-
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import org.eclipse.jetty.server.Authentication;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
-//need to extend Endpoint for websocket to work properly
+
 public class WebSocketFacade extends Endpoint {
 
     Session session;
@@ -45,6 +42,7 @@ public class WebSocketFacade extends Endpoint {
     //Endpoint requires this method, but you don't have to do anything
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+        System.out.println("Websocket connection opened");
     }
 
     public void send(UserGameCommand command) throws IOException {

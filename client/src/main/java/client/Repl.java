@@ -5,6 +5,7 @@ import chess.ChessGame;
 import client.websocket.NotificationHandler;
 import client.websocket.WebSocketFacade;
 import exception.ResponseException;
+import ui.DrawingChessBoard;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -33,7 +34,7 @@ public class Repl implements NotificationHandler {
     public void setClientToGame(String serverUrl, String authToken, int gameId, ChessGame.TeamColor teamColor) throws IOException {
         WebSocketFacade ws;
         try {
-            ws = new WebSocketFacade(serverUrl, this); // 'this' is your NotificationHandler
+            ws = new WebSocketFacade(serverUrl, this);
         } catch (ResponseException e) {
             System.out.println("Failed to start WebSocket: " + e.getMessage());
             return;
@@ -78,7 +79,8 @@ public class Repl implements NotificationHandler {
             }
             case LOAD_GAME -> {
                 LoadGameMessage gameMsg = (LoadGameMessage) message;
-                System.out.println("Game loaded: " + gameMsg.getGame().toString());
+                ChessGame game = gameMsg.getGame();
+                DrawingChessBoard.drawChessBoard(System.out, game, client.getTeamColor(), null);
             }
         }
         printPrompt();
