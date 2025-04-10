@@ -50,7 +50,7 @@ public class ServerFacadeTests {
     @Test
     public void registerTestFailed() throws ResponseException {
         serverFacade.delete();
-        String uniqueUsername = "test" + System.currentTimeMillis(); // Ensures uniqueness
+        String uniqueUsername = "test" + System.currentTimeMillis();
         UserData userData = new UserData(uniqueUsername, "test", "test");
         serverFacade.register(userData);
         ResponseException exception = assertThrows(ResponseException.class, () -> serverFacade.register(userData));

@@ -117,6 +117,7 @@ public class WebSocketHandler {
             gameDao.finishGame(gameId);
             var message = String.format("%s has resigned", username);
             var notification = new NotificationMessage(message);
+            var notification1 = new NotificationMessage("You have resigned");
             connections.broadcastToGame(gameId, authToken, notification);
             connections.sendToClient(authToken, notification);
         } catch (DataAccessException ex) {
