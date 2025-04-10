@@ -1,6 +1,7 @@
 package client;
 
 
+import chess.ChessGame;
 import client.websocket.NotificationHandler;
 import client.websocket.WebSocketFacade;
 import exception.ResponseException;
@@ -29,7 +30,7 @@ public class Repl implements NotificationHandler {
         this.client = newClient;
     }
 
-    public void setClientToGame(String serverUrl, String authToken, int gameId) throws IOException {
+    public void setClientToGame(String serverUrl, String authToken, int gameId, ChessGame.TeamColor teamColor) throws IOException {
         WebSocketFacade ws;
         try {
             ws = new WebSocketFacade(serverUrl, this); // 'this' is your NotificationHandler
@@ -37,7 +38,7 @@ public class Repl implements NotificationHandler {
             System.out.println("Failed to start WebSocket: " + e.getMessage());
             return;
         }
-        this.client = new InGameClient(serverUrl, authToken, this, this, gameId, ws);
+        this.client = new InGameClient(serverUrl, authToken, this, this, gameId, ws, teamColor);
     }
 
     public void run() {
@@ -84,7 +85,7 @@ public class Repl implements NotificationHandler {
     }
 
     private void printPrompt() {
-        String status = client.isLoggedIn() ? SET_TEXT_COLOR_BLUE + "[LOGGED_IN]" : SET_TEXT_COLOR_MAGENTA + "[LOGGED_OUT]";
+        String status = client.isLoggedIn() ? (client.inGame() ? SET_TEXT_COLOR_BLUE + "[IN_GAME]" : SET_TEXT_COLOR_BLUE + "[LOGGED_IN]") : SET_TEXT_COLOR_MAGENTA + "[LOGGED_OUT]";
         System.out.print("\n" + RESET_TEXT_COLOR + status + RESET_TEXT_COLOR + " >>> " + SET_TEXT_COLOR_GREEN);
     }
 

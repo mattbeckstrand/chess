@@ -4,4 +4,5 @@ public interface Clients {
     String eval(String input);
     String help();
     boolean isLoggedIn();
+    boolean inGame();
 }

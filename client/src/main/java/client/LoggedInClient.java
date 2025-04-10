@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
 import server.ServerFacade;
@@ -8,6 +10,7 @@ import ui.DrawingChessBoard;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
@@ -16,6 +19,7 @@ public class LoggedInClient implements Clients{
     private final String serverUrl;
     private final Repl repl;
     private final String authToken;
+    private List<GameSummary> lastListedGames;
 
     public LoggedInClient(String serverUrl, String authToken, Repl repl) {
         this.serverUrl = serverUrl;
@@ -27,6 +31,10 @@ public class LoggedInClient implements Clients{
     @Override
     public boolean isLoggedIn() {
         return true;
+    }
+    @Override
+    public boolean inGame(){
+        return false;
     }
 
     public String eval(String input) {
@@ -44,7 +52,7 @@ public class LoggedInClient implements Clients{
                 default -> help();
 
             };
-        } catch (ResponseException ex) {
+        } catch (ResponseException | IOException ex) {
             return ex.getMessage();
         }
     }
@@ -69,7 +77,7 @@ public class LoggedInClient implements Clients{
         ListGamesResponse response = server.listGames(authToken);
         StringBuilder result = new StringBuilder();
         List<GameSummary> games = response.games();
-
+        this.lastListedGames = response.games();
         int count = 1;
         for (GameSummary game : games) {
             result.append(count++).append(". ");
@@ -89,15 +97,25 @@ public class LoggedInClient implements Clients{
 
     public String playGame(String... params) throws ResponseException, IOException {
         if (params.length != 2) {
-            return "Usage: join <ID> [WHITE|BLACK]";
+            return "Usage: join <Id> [WHITE|BLACK]";
         }
-        String stringGameID = params[0];
-        int gameId = Integer.parseInt(stringGameID);
+        int index = Integer.parseInt(params[0]) - 1;
+        if (lastListedGames == null || index < 0 || index >= lastListedGames.size()) {
+            return "Error: invalid game index. Please use the 'list' command first.";
+        }
+
+        int gameId = lastListedGames.get(index).gameID();
         String playerColor = params[1];
+        ChessGame.TeamColor tColor = playerColor.equalsIgnoreCase("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
         JoinGameRequest request = new JoinGameRequest(playerColor, gameId);
         server.joinGame(authToken, request);
-        DrawingChessBoard.drawChessBoard(System.out, playerColor);
-        repl.setClientToGame(serverUrl, authToken, gameId);
+
+        GameData gameData = server.getGame(authToken, gameId);
+        ChessGame game = gameData.getGame();
+        DrawingChessBoard.drawChessBoard(System.out, game, tColor, null);
+        repl.setClientToGame(serverUrl, authToken, gameId, tColor);
+
         return "Successfully joined game";
     }
 
@@ -107,9 +125,10 @@ public class LoggedInClient implements Clients{
         }
         String stringGameId = params[0];
         int gameId = Integer.parseInt(stringGameId);
-        repl.setClientToGame(serverUrl, authToken, gameId);
-
-        DrawingChessBoard.drawChessBoard(System.out, "WHITE");
+        repl.setClientToGame(serverUrl, authToken, gameId, ChessGame.TeamColor.WHITE);
+        GameData gameData = server.getGame(authToken, gameId);
+        ChessGame game = gameData.getGame();
+        DrawingChessBoard.drawChessBoard(System.out, game, ChessGame.TeamColor.WHITE, null);
         return "Game observed";
     }
 

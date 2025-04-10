@@ -13,14 +13,14 @@ import static ui.EscapeSequences.*;
 
 public class DrawingChessBoard {
 
-    public static void drawChessBoard(PrintStream out, ChessGame game, String perspectiveColor, List<ChessPosition> highlights) {
+    public static void drawChessBoard(PrintStream out, ChessGame game, ChessGame.TeamColor teamColor, List<ChessPosition> highlights) {
         String light = SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE;
         String dark = SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE;
         String highlightBg = SET_BG_COLOR_GREEN + SET_TEXT_COLOR_BLACK;
         String reset = RESET_BG_COLOR + RESET_TEXT_COLOR;
 
         String[][] board = new String[10][10];
-        boolean isWhitePerspective = Objects.equals(perspectiveColor, "WHITE");
+        boolean isWhitePerspective = Objects.equals(teamColor, ChessPiece.TeamColor.WHITE);
 
         for (int r = 0; r < 10; r++) {
             for (int c = 0; c < 10; c++) {

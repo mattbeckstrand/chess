@@ -27,6 +27,11 @@ public class UnloggedInClient implements Clients{
     }
 
     @Override
+    public boolean inGame(){ return false; }
+
+
+
+    @Override
     public String eval(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
