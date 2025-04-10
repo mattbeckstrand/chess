@@ -22,7 +22,6 @@ public class DrawingChessBoard {
         int[] rowOrder = isWhitePerspective ? new int[]{8, 7, 6, 5, 4, 3, 2, 1} : new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         int[] colOrder = isWhitePerspective ? new int[]{1, 2, 3, 4, 5, 6, 7, 8} : new int[]{8, 7, 6, 5, 4, 3, 2, 1};
 
-        // Print top column labels
         out.print("   ");
         for (int col : colOrder) {
             char colLabel = (char) ('a' + col - 1);
@@ -30,7 +29,6 @@ public class DrawingChessBoard {
         }
         out.println();
 
-        // Print each row with left and right row numbers
         for (int row : rowOrder) {
             out.print(SET_TEXT_COLOR_MAGENTA + " " + row + " " + reset);
             for (int col : colOrder) {
@@ -52,7 +50,6 @@ public class DrawingChessBoard {
             out.println();
         }
 
-        // Print bottom column labels
         out.print("   ");
         for (int col : colOrder) {
             char colLabel = (char) ('a' + col - 1);
