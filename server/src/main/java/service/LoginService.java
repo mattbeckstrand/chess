@@ -28,7 +28,7 @@ public class LoginService {
     }
 
     public void checkUserDataExists() throws ResponseException {
-        if(this.userData == null){
+        if (this.userData == null){
             throw new ResponseException(401, "Error: unauthorized data doesn't exist");
         }
     }

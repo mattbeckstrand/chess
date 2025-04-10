@@ -143,4 +143,20 @@ public class SqlGameDataDAO implements GameDataDAO {
         }
         return true;
     }
+
+    public void updateGameMove(String serializedGame, Integer gameId) throws DataAccessException {
+        String stmt = "UPDATE games SET game = ? WHERE gameID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(stmt)) {
+            prepStmt.setString(1, serializedGame);
+            prepStmt.setInt(2, gameId);
+            int affectedRows = prepStmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DataAccessException("game not found or player already assigned.");
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

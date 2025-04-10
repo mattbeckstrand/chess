@@ -12,7 +12,7 @@ public class MemoryGameDataDao implements GameDataDAO{
 
     @Override
     public GameData createGame(String gameName)  {
-        GameData game = new GameData(nextID++, null,null, gameName, new ChessGame());
+        GameData game = new GameData(nextID++, null,null, gameName, new ChessGame(), false);
         gameDataList.put(game.getGameID(), game);
         return game;
     }

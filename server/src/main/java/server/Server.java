@@ -9,9 +9,7 @@ import handlers.*;
 import dataaccess.auth.*;
 import dataaccess.user.*;
 import dataaccess.DatabaseManager;
-
-import javax.xml.crypto.Data;
-import java.sql.Connection;
+import server.websocket.WebSocketHandler;
 
 public class Server {
 
@@ -19,6 +17,7 @@ public class Server {
         Spark.port(desiredPort);
         SqlUserDAO userDAO = new SqlUserDAO();
         SqlAuthDao authDAO = null;
+        WebSocketHandler webSocketHandler = new WebSocketHandler();
         SqlGameDataDAO gameDAO = new SqlGameDataDAO();
 
         Spark.staticFiles.location("web");
@@ -29,7 +28,7 @@ public class Server {
             System.out.println("Error in auth or creating Database");
         }
         // Register your endpoints and handle exceptions here.
-
+        Spark.webSocket("/ws", webSocketHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.post("/user", new RegisterHandler(authDAO, userDAO));
         Spark.post("/session", new LoginHandler(authDAO, userDAO));
