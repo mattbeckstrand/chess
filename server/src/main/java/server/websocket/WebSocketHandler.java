@@ -156,12 +156,12 @@ public class WebSocketHandler {
         try {
             SqlAuthDao authDao = new SqlAuthDao();
             AuthData authData = authDao.findAuthByToken(authToken);
-            if (isPlayer(gameId, authToken)) {
-                connections.sendToClient(authToken, new ErrorMessage("Error: not a player"));
+            if (authData == null) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: bad authToken"));
                 return;
             }
-            if (authData == null) {
-                connections.sendToClient(authToken, new ErrorMessage("Error: observer not player"));
+            if (isPlayer(gameId, authToken)) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: not a player"));
                 return;
             }
             if (checkIsOverFlag(gameId)) {
