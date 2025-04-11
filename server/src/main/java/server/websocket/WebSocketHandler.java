@@ -157,7 +157,7 @@ public class WebSocketHandler {
             SqlAuthDao authDao = new SqlAuthDao();
             AuthData authData = authDao.findAuthByToken(authToken);
             if (authData == null) {
-                connections.sendToClient(authToken, new ErrorMessage("Error: bad authToken"));
+                sendErrorToSession(session, "bad authToken");
                 return;
             }
             if (isPlayer(gameId, authToken)) {
