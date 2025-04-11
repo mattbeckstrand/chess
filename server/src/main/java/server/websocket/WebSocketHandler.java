@@ -149,7 +149,7 @@ public class WebSocketHandler {
             AuthData authData = authDao.findAuthByToken(authToken);
 
             if (authData == null) {
-                sendErrorToSession(session, "Auth Data null");
+                connections.sendToClient(authToken, new ErrorMessage("Error: observer not player"));
                 return;
             }
             if (checkIsOverFlag(gameId)) {
@@ -160,6 +160,7 @@ public class WebSocketHandler {
             ChessGame.TeamColor playerColor = getColor(authToken, gameId);
             if (game.getTeamTurn() != playerColor){
                 connections.sendToClient(authToken, new ErrorMessage("Error: not your turn!"));
+                return;
             }
             ChessPiece startPiece = game.getBoard().getPiece(move.getStartPosition());
             if (startPiece == null) {
