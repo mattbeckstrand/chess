@@ -143,11 +143,23 @@ public class WebSocketHandler {
 
     }
 
+    private boolean isPlayer(int gameId, String authToken) throws DataAccessException {
+        SqlGameDataDAO gameDao = new SqlGameDataDAO();
+        GameData gameData = gameDao.getGame(gameId);
+        String username = getUsername(authToken);
+        if (gameData.getWhiteUsername() != username && gameData.getBlackUsername() != username) {
+            return false;
+        }
+        return true;
+    }
     public void makeMove(String authToken, int gameId, ChessMove move, Session session) throws IOException {
         try {
             SqlAuthDao authDao = new SqlAuthDao();
             AuthData authData = authDao.findAuthByToken(authToken);
-
+            if (isPlayer(gameId, authToken)) {
+                connections.sendToClient(authToken, new ErrorMessage("Error: not a player"));
+                return;
+            }
             if (authData == null) {
                 connections.sendToClient(authToken, new ErrorMessage("Error: observer not player"));
                 return;
